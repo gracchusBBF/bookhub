@@ -11,8 +11,8 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="status")
-    private int status;
+    @Column(columnDefinition = "VARCHAR(60) CHECK (status IN ('ACTIVE', 'PENDING', 'INACTIVE'))")
+    private String status = "INACTIVE";
 
     @ManyToOne
     @JoinColumn(name="user_id")

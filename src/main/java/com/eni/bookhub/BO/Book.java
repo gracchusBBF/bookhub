@@ -29,8 +29,8 @@ public class Book {
     @Column(name="category", nullable=false)
     private String category;
 
-    @Column(name="available", nullable=false)
-    private String available;
+    @Column(columnDefinition = "VARCHAR(60) CHECK (status IN ('AVAILABLE', 'UNAVAILABLE', 'MISSING'))")
+    private String status = "AVAILABLE";
 
     @Column(name="front_cover_img", nullable=false)
     private String frontCoverImg;
