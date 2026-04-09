@@ -1,14 +1,13 @@
 package com.eni.bookhub.BO;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-@Table(name = "user")
+@Table(name = "[USER]")
 public class User {
     @Id
     @Column(name = "user_id")
@@ -17,8 +16,8 @@ public class User {
     private String email;
     @Column(nullable = false, length = 250)
     private String password;
-    @Column(name = "phone_number", length = 10)
-    private String phoneNumber;
+    //@Column(name = "phone_number", length = 10)
+    //private String phoneNumber;
     @Column(name = "first_name", nullable = false, length = 110)
     private String firstName;
     @Column(name = "last_name", nullable = false, length = 110)
@@ -28,11 +27,12 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn( name="role_id")
+    @JoinColumn(name="role_id")
     private UserRole userRole;
 
     @OneToMany(mappedBy = "user")
     private List<Loan> loans;
 
-
+    @OneToMany(mappedBy = "user")
+    private List<Reservation> reservations;
 }

@@ -1,6 +1,4 @@
 package com.eni.bookhub.BO;
-
-
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,10 +7,9 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name="book")
+@Table(name="BOOK")
 public class Book {
     @Id
-    @GeneratedValue
     @Column(name="book_id", nullable=false)
     private int id;
 
@@ -45,5 +42,8 @@ public class Book {
 
     @OneToMany(mappedBy = "book")
     private List<Loan> loans;
+
+    @OneToMany(mappedBy = "book")
+    private List<Reservation> reservations;
 
 }

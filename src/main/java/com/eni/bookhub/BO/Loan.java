@@ -7,7 +7,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "loan")
+@Table(name = "LOAN")
 @Data
 public class Loan {
 
@@ -30,5 +30,4 @@ public class Loan {
     private Book book;
 
     private Date deadline;
-
 }

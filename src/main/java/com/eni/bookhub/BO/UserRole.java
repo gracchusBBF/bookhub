@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "role")
 @Data
+@Table(name = "ROLE")
 public class UserRole {
     @Id
     @Column(name = "role_id")
@@ -18,14 +18,13 @@ public class UserRole {
     @Column(name= "role_name", nullable = false, unique = true, length = 120)
     private String roleName;
 
-    @OneToMany
-    @JoinColumn(name = "user_id")
+    @OneToMany(mappedBy = "userRole")
     private List<User> users = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
-            name = "permission_role",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    Set<Permission> permissionRole;
+            name = "PERMISSION_ROLE_TEST",
+            joinColumns = {@JoinColumn(name = "role_id")},
+            inverseJoinColumns = {@JoinColumn(name = "permission_id")})
+    private List<Permission> listPermission = new ArrayList<>();
 }
