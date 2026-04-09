@@ -5,7 +5,7 @@ import com.eni.bookhub.BO.Loan;
 import com.eni.bookhub.BO.User;
 import com.eni.bookhub.repository.LoanRepository;
 import org.springframework.stereotype.Service;
-
+import com.eni.bookhub.repository.BookRepository;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,9 +15,11 @@ import java.util.List;
 public class LoanService {
 
     private final LoanRepository loanRepository;
+    private final BookRepository bookRepository;
 
-    public LoanService(LoanRepository loanRepository) {
+    public LoanService(LoanRepository loanRepository, BookRepository bookRepository) {
         this.loanRepository = loanRepository;
+        this.bookRepository = bookRepository;
     }
 
 
