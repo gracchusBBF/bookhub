@@ -4,6 +4,8 @@ import com.eni.bookhub.BO.Book;
 import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.repository.BookRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,8 +18,10 @@ public class BookServiceImpl implements BookService {
     private BookRepository bookRepository;
 
     @Override
-    public List<Book> getBooks() {
-        return bookRepository.findAll();
+    public List<Book> getBooks(int pageNum) {
+        int pageSize = 20;
+        Pageable pageable = PageRequest.of(pageNum -1, pageSize);
+        return bookRepository.findAll(pageable).getContent();
     }
 
     @Override
@@ -41,6 +45,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public Optional<Book> getBookByTitle(String title) {
+        return bookRepository.findBooksByTitle(title);
+    }
+
+    @Override
     public Book updateBook(Book book) {
         return bookRepository.save(book);
     }
@@ -48,6 +57,13 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(Integer bookId) {
         bookRepository.deleteById(bookId);
+    }
+
+    @Override
+    public Optional<List<Book>> searchBooks(int pageNum, String query) {
+        int pageSize = 20;
+        Pageable pageable = PageRequest.of(pageNum -1, pageSize);
+        return Optional.of(bookRepository.searchBooksByQuery(query, pageable).getContent());
     }
 
 }
