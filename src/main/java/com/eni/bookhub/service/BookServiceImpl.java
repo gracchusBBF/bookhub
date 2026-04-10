@@ -66,4 +66,12 @@ public class BookServiceImpl implements BookService {
         return Optional.of(bookRepository.searchBooksByQuery(query, pageable).getContent());
     }
 
+    public Optional<List<Book>> filterBooks(int pageNum, String category, String status) {
+        int pageSize = 20;
+        Pageable pageable = PageRequest.of(pageNum -1, pageSize);
+        String cat = (category != null && !category.isBlank()) ? category : null;
+        String sta = (status != null && !status.isBlank()) ? status : null;
+        return Optional.of(bookRepository.getBooksByFilters(cat, sta, pageable).getContent());
+    }
+
 }
