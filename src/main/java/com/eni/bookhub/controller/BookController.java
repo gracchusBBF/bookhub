@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @AllArgsConstructor
 @RestController
@@ -36,12 +38,24 @@ public class BookController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Book>> getAllBooks(){
-        List<Book> books = bookService.getBooks();
+    public ResponseEntity<List<Book>> getAllBooks(@RequestParam(defaultValue = "1") String page){
+        int pageNum = Integer.parseInt(page);
+        List<Book> books = bookService.getBooks(pageNum);
         if(books == null || books.isEmpty()){
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBooksByQuery(@RequestParam Map<String, String> requestParams) {
+        String page = requestParams.get("page");
+        String query = requestParams.get("query");
+
+        int pageNum = (page != null) ? Integer.parseInt(page) : 1;
+
+        Optional<List<Book>> book =  bookService.searchBooks(pageNum, query);
+        return ResponseEntity.ok(book);
     }
 
     @GetMapping("/{id}")
