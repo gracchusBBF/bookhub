@@ -1,6 +1,7 @@
 package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.Book;
+import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.repository.BookRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class BookServiceImpl implements BookService {
         if(book == null) {
             throw new RuntimeException("Informations du livre incomplètes");
         }
+        if(bookRepository.existsBooksByIsbn(book.getIsbn())) {
+            throw new DuplicateIsbnException(book.getIsbn());
+        }
         try {
             bookRepository.save(book);
         } catch (Exception e) {
@@ -36,5 +40,14 @@ public class BookServiceImpl implements BookService {
         }
     }
 
+    @Override
+    public Book updateBook(Book book) {
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public void deleteBook(Integer bookId) {
+        bookRepository.deleteById(bookId);
+    }
 
 }
