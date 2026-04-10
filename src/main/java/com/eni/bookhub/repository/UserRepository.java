@@ -20,5 +20,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
     void updateUser(User user);
 
-    void deleteUser(User user);
+    void deleteUser(int userId);
 }

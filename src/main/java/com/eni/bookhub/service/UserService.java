@@ -13,5 +13,5 @@ public interface UserService {
     Optional<List<User>> getByRole(String role);
     void addUser(User user);
     void updateUser(User user);
-    void deleteUser(User user);
+    void deleteUser(int userId);
 }

@@ -1,17 +1,26 @@
 package com.eni.bookhub.BO;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
+@EqualsAndHashCode
+@ToString
+@Builder
+
 @Data
 @Table(name = "[USER]")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true, length = 180)
     private String email;
