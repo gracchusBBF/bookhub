@@ -76,8 +76,8 @@ public class Book {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "book")
-    private List<Loan> loans;
+    @OneToOne(mappedBy = "book")
+    private Loan loans;
 
     @OneToMany(mappedBy = "book")
     private List<Reservation> reservations;
