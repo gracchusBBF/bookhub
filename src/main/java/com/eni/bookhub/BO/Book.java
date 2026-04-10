@@ -69,6 +69,7 @@ public class Book {
 
     @NotNull
     @Column(name="copy_number")
+    @Builder.Default
     private Integer copyNumber;
 
     @OneToMany(mappedBy="book", cascade=CascadeType.ALL, orphanRemoval=true)
