@@ -16,4 +16,6 @@ public interface BookService {
     void deleteBook(Integer bookId);
 
     Optional<List<Book>> searchBooks(int pageNum, String query);
+
+    Optional<List<Book>> filterBooks(int pageNum, String category, String status);
 }

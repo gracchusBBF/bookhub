@@ -38,10 +38,20 @@ public class BookController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Book>> getAllBooks(@RequestParam(defaultValue = "1") String page){
-        int pageNum = Integer.parseInt(page);
-        List<Book> books = bookService.getBooks(pageNum);
-        if(books == null || books.isEmpty()){
+    public ResponseEntity<Optional<List<Book>>> getAllBooks(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String status) {
+
+        Optional<List<Book>> books;
+
+        if ((category != null && !category.isBlank()) || (status != null && !status.isBlank())) {
+            books = bookService.filterBooks(page, category, status);
+        } else {
+            books = Optional.ofNullable(bookService.getBooks(page));
+        }
+
+        if (books.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(books);
@@ -54,8 +64,8 @@ public class BookController {
 
         int pageNum = (page != null) ? Integer.parseInt(page) : 1;
 
-        Optional<List<Book>> book =  bookService.searchBooks(pageNum, query);
-        return ResponseEntity.ok(book);
+        Optional<List<Book>> books =  bookService.searchBooks(pageNum, query);
+        return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
