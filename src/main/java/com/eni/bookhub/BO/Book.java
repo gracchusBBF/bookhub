@@ -10,6 +10,7 @@ import java.util.List;
 @Table(name="BOOK")
 public class Book {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="book_id", nullable=false)
     private int id;
 
@@ -35,13 +36,13 @@ public class Book {
     private String frontCoverImg;
 
     @Column(name="copy_number")
-    private int copyNumber;
+    private Integer copyNumber;
 
     @OneToMany(mappedBy="book", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "book")
-    private List<Loan> loans;
+    //@OneToOne(mappedBy = "book")
+    //private Loan loans;
 
     @OneToMany(mappedBy = "book")
     private List<Reservation> reservations;

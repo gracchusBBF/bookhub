@@ -1,4 +1,5 @@
 package com.eni.bookhub.BO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Table(name = "[USER]")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private int id;
     @Column(nullable = false, unique = true, length = 180)
@@ -30,8 +32,9 @@ public class User {
     @JoinColumn(name="role_id")
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user")
-    private List<Loan> loans;
+   // @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+   // @JsonManagedReference("user-loans")
+    //private List<Loan> loans;
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservations;
