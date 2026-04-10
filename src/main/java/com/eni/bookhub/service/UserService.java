@@ -11,7 +11,7 @@ public interface UserService {
     Optional<User> getUserByEmail(String email);
     List<User> getAll();
     Optional<List<User>> getByRole(String role);
-    void addUser(User user);
-    void updateUser(User user);
-    void deleteUser(int userId);
+    User save(User user);
+    //oid updateUser(User user);
+    void delete(int userId);
 }

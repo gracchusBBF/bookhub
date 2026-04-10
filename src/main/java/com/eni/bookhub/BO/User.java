@@ -1,4 +1,5 @@
 package com.eni.bookhub.BO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,9 +12,9 @@ import java.util.List;
 @Setter
 @Entity
 @EqualsAndHashCode
-@ToString
 @Builder
 
+@ToString(of = {"id", "email", "phoneNumber", "firstName", "lastName", "userRole", "comments", "loans", "reservations"})
 @Data
 @Table(name = "[USER]")
 public class User {
@@ -25,6 +26,7 @@ public class User {
     @Column(nullable = false, unique = true, length = 180)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, length = 250)
     private String password;
 

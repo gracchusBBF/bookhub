@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface UserRoleService {
     Optional<UserRole> getUserRoleByName(String role);
     Optional<UserRole> getUserRoleById(Long id);
-    List<UserRole> getAllUserRole();
+    List<UserRole> getAllUserRoles();
 }

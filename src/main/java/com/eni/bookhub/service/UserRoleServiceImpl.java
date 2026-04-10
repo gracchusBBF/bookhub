@@ -19,9 +19,9 @@ public class UserRoleServiceImpl {
         return userRoleRepository.getUserRoleById(id);
     }
     public Optional<UserRole> getUserRoleByName(String name) {
-        return userRoleRepository.getUserRoleByName(name);
+        return userRoleRepository.getUserRoleByRoleName(name);
     }
-    public List<UserRole> getAllUserRole() {
+    public List<UserRole> getAllUserRoles() {
         return userRoleRepository.findAll();
     }
 }

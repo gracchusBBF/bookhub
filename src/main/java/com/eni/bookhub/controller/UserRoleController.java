@@ -19,7 +19,7 @@ public class UserRoleController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllRoles() {
         try{
-            return ResponseEntity.status(HttpStatus.OK).body(userRoleService.getAllUserRole());
+            return ResponseEntity.status(HttpStatus.OK).body(userRoleService.getAllUserRoles());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

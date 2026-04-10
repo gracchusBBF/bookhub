@@ -1,46 +1,53 @@
 package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.User;
-import com.eni.bookhub.BO.UserRole;
 import com.eni.bookhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor
-@AllArgsConstructor
+// @NoArgsConstructor
+//@AllArgsConstructor
 @Service
-public class UserServiceImpl {
-    private UserRepository userRepository;
-
-    public Optional<User> getUserById(Integer userId) {
-        return userRepository.getUserById(userId);
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public Optional<User> findByEmail(String email) {
+    @Override
+    public Optional<User> getUserById(Integer userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public Optional<User> getUserByEmail(String email) {
         return userRepository.getUserByEmail(email);
     }
 
-
-    public List<User> findAll() {
+    @Override
+    public List<User> getAll() {
         return userRepository.findAll();
     }
 
+    @Override
     public Optional<List<User>> getByRole(String role) {
-        return userRepository.findByRole(role);
+        return userRepository.findByUserRole(role);
     }
 
-    public void addUser(User user) {
-        userRepository.save(user);
+    @Override
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
-    public void updateUser(User user) {
+    /*public User updateUser(User user) {
         userRepository.save(user);
-    }
-    public void deleteUser(int userId) {
-        userRepository.delete(userId);
+    }*/
+    public void delete(int userId) {
+        userRepository.deleteUserById(userId);
     }
 }

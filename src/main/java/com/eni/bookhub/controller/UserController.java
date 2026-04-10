@@ -13,7 +13,24 @@ import java.util.Optional;
 @RequestMapping("api/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<User> usersList = userService.getAll();
+            if (usersList.isEmpty() || usersList == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(usersList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable("id") String id) {
@@ -50,7 +67,7 @@ public class UserController {
     public ResponseEntity<?> addUser(@RequestBody User user) {
         try{
             if(user != null && user.getId() == null) {
-                userService.addUser(user);
+                userService.save(user);
                 return ResponseEntity.status(HttpStatus.CREATED).body(user);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Les champs d'utilisateur ne sont pas correctement remplis.");
@@ -66,7 +83,7 @@ public class UserController {
             if(user == null || user.getId() == null || user.getId() <= 0) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User et l'id sont obligatoires.");
             }
-            userService.updateUser(user);
+            userService.save(user);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -77,7 +94,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable("id") String id) {
         try {
             final int userId = Integer.parseInt(id);
-            userService.deleteUser(userId);
+            userService.delete(userId);
             return ResponseEntity.status(HttpStatus.OK).body("User " + userId + " a été supprimé.");
         } catch (NumberFormatException e) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Votre identifiant n'est pas un entier");
