@@ -70,14 +70,14 @@ public class Book {
     @NotNull
     @Column(name="copy_number")
     @Builder.Default
-    private int copyNumber = 1;
+    private Integer copyNumber = 1;
 
     @OneToMany(mappedBy="book", cascade=CascadeType.ALL, orphanRemoval=true)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "book")
-    private List<Loan> loans;
+    @OneToOne(mappedBy = "book")
+    private Loan loans;
 
     @OneToMany(mappedBy = "book")
     private List<Reservation> reservations;

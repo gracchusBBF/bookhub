@@ -8,6 +8,7 @@ import lombok.Data;
 @Entity
 public class Reservation {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(columnDefinition = "VARCHAR(60) CHECK (status IN ('ACTIVE', 'PENDING', 'INACTIVE'))")
