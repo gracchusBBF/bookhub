@@ -29,10 +29,10 @@ public class UserRole {
     @OneToMany(mappedBy = "userRole")
     private List<User> users;
 
-/*    @ManyToMany
+    @ManyToMany
     @JoinTable(
-            name = "PERMISSION_ROLE_TEST",
+            name = "PERMISSION_ROLE",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "permission_id")})
-    private List<Permission> listPermission = new ArrayList<>(); */
+    private List<Permission> listPermission = new ArrayList<>();
 }

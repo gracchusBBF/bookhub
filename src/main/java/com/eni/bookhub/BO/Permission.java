@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -25,4 +27,7 @@ public class Permission {
     @Size(max = 100)
     @Column(name = "permission_name", nullable = false, unique = true, length = 100)
     private String permissionName;
+
+    @ManyToMany(mappedBy = "listPermission")
+    private List<UserRole> userRole = new ArrayList<>();
 }
