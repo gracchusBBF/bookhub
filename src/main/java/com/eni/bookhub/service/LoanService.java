@@ -3,17 +3,19 @@ package com.eni.bookhub.service;
 
 
 import com.eni.bookhub.BO.Loan;
+import com.eni.bookhub.dto.LoanDTO;
+
 import java.util.List;
 
 public interface LoanService {
 
-    List<Loan> listLoans();
+    List<LoanDTO> listLoans();
 
-    List<Loan> listLoanByUserId(int userId);
+    List<LoanDTO> listLoanByUserId(int userId);
 
     Boolean getLoanById(int id);
 
-    Boolean createLoan(Loan loan);
+    Boolean createLoan(LoanDTO loan);
 
     Boolean updateLoan(int id);
 }

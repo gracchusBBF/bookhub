@@ -1,17 +1,10 @@
 package com.eni.bookhub.controller;
 
-import com.eni.bookhub.BO.Book;
-import com.eni.bookhub.BO.Loan;
+import com.eni.bookhub.dto.LoanDTO;
 import com.eni.bookhub.service.LoanServiceImpl;
-import com.eni.bookhub.BO.User;
-import com.eni.bookhub.repository.LoanRepository;
-import com.eni.bookhub.service.LoanService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -23,7 +16,7 @@ public class LoanController {
     }
 
     @PostMapping("/API/loans")
-    public ResponseEntity<Void> save(@RequestBody Loan loan) {
+    public ResponseEntity<Void> save(@RequestBody LoanDTO loan) {
         if (loanServiceImpl.createLoan(loan)) {
             return ResponseEntity.ok().build();
         } else {
@@ -42,11 +35,11 @@ public class LoanController {
     }
 
     @GetMapping(value = "/API/loans")
-    public List<Loan> listLoans() {
+    public List<LoanDTO> listLoans() {
         return loanServiceImpl.listLoans();
     }
     @GetMapping(value = "/API/loans/{userId}")
-    public List<Loan> listLoans(@PathVariable int userId) {
+    public List<LoanDTO> listLoans(@PathVariable int userId) {
         return loanServiceImpl.listLoanByUserId(userId);
     }
 }
