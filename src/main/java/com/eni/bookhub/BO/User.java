@@ -1,21 +1,32 @@
 package com.eni.bookhub.BO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @Entity
+@EqualsAndHashCode
+@Builder
+
+@ToString(of = {"id", "email", "phoneNumber", "firstName", "lastName", "userRole", "comments", "loans", "reservations"})
 @Data
 @Table(name = "[USER]")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, unique = true, length = 180)
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false, length = 250)
     private String password;
 
