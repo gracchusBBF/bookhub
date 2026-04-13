@@ -2,6 +2,7 @@ package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.User;
 import com.eni.bookhub.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addUser(@RequestBody User user) {
+    public ResponseEntity<?> addUser(@Valid @RequestBody User user) {
         try{
             if(user != null && user.getId() == null) {
                 userService.save(user);
@@ -78,7 +79,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody User user) {
         try{
             if(user == null || user.getId() == null || user.getId() <= 0) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User et l'id sont obligatoires.");

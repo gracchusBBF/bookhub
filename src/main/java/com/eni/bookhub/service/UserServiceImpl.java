@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-// @NoArgsConstructor
-//@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -44,9 +42,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    /*public User updateUser(User user) {
-        userRepository.save(user);
-    }*/
     public void delete(int userId) {
         userRepository.deleteUserById(userId);
     }

@@ -16,13 +16,12 @@ import java.util.Set;
 @Builder
 
 @Entity
-@Data
 @Table(name = "ROLE")
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
-    private Long id;
+    private Integer id;
 
     @Column(name= "role_name", nullable = false, unique = true, length = 120)
     private String roleName;
