@@ -13,6 +13,7 @@ public class RegisterRequest {
     private String email;
     private String password;
     private UserRole role;
+    private String phoneNumber;
     private String firstName;
     private String lastName;
 

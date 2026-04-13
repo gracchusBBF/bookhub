@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UserRoleServiceImpl {
     private UserRoleRepository userRoleRepository;
 
-    public Optional<UserRole> getUserRoleById(Long id){
+    public Optional<UserRole> getUserRoleById(Integer id){
         return userRoleRepository.getUserRoleById(id);
     }
     public Optional<UserRole> getUserRoleByName(String name) {
