@@ -25,7 +25,6 @@ public class Comment {
     @JoinColumn(name="book_id")
     private Book book;
 
-
-
-
+    @Column(columnDefinition = "VARCHAR(60) CHECK (status IN ('APPROUVED', 'REFUSED', 'PENDING'))")
+    private String status = "PENDING";
 }
