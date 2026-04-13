@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @EqualsAndHashCode
 @Builder
-
 @ToString(of = {"id", "email", "phoneNumber", "firstName", "lastName", "userRole", "comments", "loans", "reservations"})
 @Data
 @Table(name = "[USER]")

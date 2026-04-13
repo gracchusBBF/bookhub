@@ -19,15 +19,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        // Register new user and return JWT
+        // enregister un nouvel utilisateur et retourner un JWT
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
-        // Authenticate and return JWT
+        // authentifier un utilisateur existant et retourner un JWT
         return ResponseEntity.ok(authService.authenticate(request));
     }
-
 
 }
