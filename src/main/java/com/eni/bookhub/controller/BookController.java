@@ -37,7 +37,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<Optional<List<Book>>> getAllBooks(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String category,
@@ -74,7 +74,7 @@ public class BookController {
         return ResponseEntity.ok(book);
     }
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<?> addBookToLibrary(@Valid @RequestBody Book book) {
         bookService.addBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
