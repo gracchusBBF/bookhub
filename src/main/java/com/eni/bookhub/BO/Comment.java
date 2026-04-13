@@ -8,6 +8,7 @@ import lombok.Data;
 @Table(name="COMMENT")
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="comment_id")
     private int id;
 
