@@ -12,7 +12,11 @@ import java.util.List;
 
 public class UserDetailsImpl implements UserDetails, CredentialsContainer {
 
-    private User user;
+    private final User user;
+
+    public UserDetailsImpl(User user) {
+        this.user = user;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
