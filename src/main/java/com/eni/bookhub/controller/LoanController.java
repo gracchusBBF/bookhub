@@ -1,10 +1,7 @@
 package com.eni.bookhub.controller;
 
-import com.eni.bookhub.BO.Book;
 import com.eni.bookhub.BO.Loan;
-import com.eni.bookhub.BO.User;
-import com.eni.bookhub.repository.LoanRepository;
-import com.eni.bookhub.service.LoanService;
+import com.eni.bookhub.service.LoanServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +12,15 @@ import java.util.List;
 
 @RestController
 public class LoanController {
-    private final LoanService loanService;
+    private final LoanServiceImpl loanServiceImpl;
 
-    public LoanController(LoanService loanService) {
-        this.loanService = loanService;
+    public LoanController(LoanServiceImpl loanServiceImpl) {
+        this.loanServiceImpl = loanServiceImpl;
     }
 
     @PostMapping("/API/loans")
     public ResponseEntity<Void> save(@RequestBody Loan loan) {
-        if (loanService.createLoan(loan)) {
+        if (loanServiceImpl.createLoan(loan)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -32,7 +29,7 @@ public class LoanController {
 
     @PutMapping("/API/loans/{id}/return")
     public ResponseEntity<Void> returnBook(@PathVariable int id) {
-        if (loanService.updateLoan(id)){
+        if (loanServiceImpl.updateLoan(id)){
             return ResponseEntity.ok().build();
         }
         else {
@@ -42,10 +39,10 @@ public class LoanController {
 
     @GetMapping(value = "/API/loans")
     public List<Loan> listLoans() {
-        return loanService.listLoans();
+        return loanServiceImpl.listLoans();
     }
     @GetMapping(value = "/API/loans/{userId}")
     public List<Loan> listLoans(@PathVariable int userId) {
-        return loanService.listLoanByUserId(userId);
+        return loanServiceImpl.listLoanByUserId(userId);
     }
 }
