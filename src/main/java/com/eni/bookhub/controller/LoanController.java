@@ -15,7 +15,7 @@ public class LoanController {
         this.loanServiceImpl = loanServiceImpl;
     }
 
-    @PostMapping("/API/loans")
+    @PostMapping("/api/loans")
     public ResponseEntity<Void> save(@RequestBody LoanDTO loan) {
         if (loanServiceImpl.createLoan(loan)) {
             return ResponseEntity.ok().build();
@@ -24,7 +24,7 @@ public class LoanController {
         }
     }
 
-    @PutMapping("/API/loans/{id}/return")
+    @PutMapping("/api/loans/{id}/return")
     public ResponseEntity<Void> returnBook(@PathVariable int id) {
         if (loanServiceImpl.updateLoan(id)){
             return ResponseEntity.ok().build();
@@ -34,11 +34,11 @@ public class LoanController {
         }
     }
 
-    @GetMapping(value = "/API/loans")
+    @GetMapping(value = "/api/loans")
     public List<LoanDTO> listLoans() {
         return loanServiceImpl.listLoans();
     }
-    @GetMapping(value = "/API/loans/{userId}")
+    @GetMapping(value = "/api/loans/{userId}")
     public List<LoanDTO> listLoans(@PathVariable int userId) {
         return loanServiceImpl.listLoanByUserId(userId);
     }
