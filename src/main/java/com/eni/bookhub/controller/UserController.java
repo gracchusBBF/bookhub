@@ -1,6 +1,7 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.User;
+import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         try {
-            List<User> usersList = userService.getAll();
+            List<UserDTO> usersList = userService.getAll();
             if (usersList.isEmpty() || usersList == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
@@ -37,7 +38,7 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable("id") String id) {
         try{
             final int userId = Integer.parseInt(id);
-            final Optional<User> user = userService.getUserById(userId);
+            final Optional<UserDTO> user = userService.getUserById(userId);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -47,7 +48,7 @@ public class UserController {
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getUserByEmail(@PathVariable("email") String email) {
         try{
-            final Optional<User> user = userService.getUserByEmail(email);
+            final Optional<UserDTO> user = userService.getUserByEmail(email);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -57,7 +58,7 @@ public class UserController {
     @GetMapping("/role/{role}")
     public ResponseEntity<?> getUsersByRole(@PathVariable("role") String role) {
         try{
-            final Optional<List<User>> usersByRole = userService.getByRole(role);
+            final Optional<List<UserDTO>> usersByRole = userService.getByRole(role);
             return ResponseEntity.status(HttpStatus.OK).body(usersByRole);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -65,10 +66,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addUser(@Valid @RequestBody User user) {
+    public ResponseEntity<?> addUser(@Valid @RequestBody UserDTO user) {
         try{
-            if(user != null && user.getId() == null) {
-                userService.save(user);
+            if(user != null && user.id() == null) {
+                userService.saveUser(user);
                 return ResponseEntity.status(HttpStatus.CREATED).body(user);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Les champs d'utilisateur ne sont pas correctement remplis.");
@@ -79,12 +80,12 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDTO user) {
         try{
-            if(user == null || user.getId() == null || user.getId() <= 0) {
+            if(user == null || user.id() == null || user.id() <= 0) {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User et l'id sont obligatoires.");
             }
-            userService.save(user);
+            userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

@@ -1,6 +1,7 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.Permission;
+import com.eni.bookhub.dto.PermissionDTO;
 import com.eni.bookhub.exception.InvalidBookIdException;
 import com.eni.bookhub.exception.PermissionNotFoundException;
 import com.eni.bookhub.service.PermissionService;
@@ -25,9 +26,9 @@ public class PermissionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Permission>> findAllPermissions() {
+    public ResponseEntity<List<PermissionDTO>> findAllPermissions() {
         try {
-            List<Permission> permissions = permissionService.getPermissions();
+            List<PermissionDTO> permissions = permissionService.getPermissions();
             return ResponseEntity.ok(permissions);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -41,7 +42,7 @@ public class PermissionController {
                 return ResponseEntity.badRequest().build();
             }
 
-            Optional<Permission> permission = permissionService.getPermissionByName(name);
+            Optional<PermissionDTO> permission = permissionService.getPermissionByName(name);
             if(permission.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
@@ -60,7 +61,7 @@ public class PermissionController {
         }
             int pId = Integer.parseInt(id);
 
-            Optional<Permission> permission = permissionService.getPermissionById(pId);
+            Optional<PermissionDTO> permission = permissionService.getPermissionById(pId);
             if(permission.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
@@ -72,17 +73,17 @@ public class PermissionController {
     }
 
     @PostMapping
-    public  ResponseEntity<?> addNewPermission(@Valid @RequestBody Permission permission) {
+    public  ResponseEntity<?> addNewPermission(@Valid @RequestBody PermissionDTO permission) {
         try {
-            String permissionName = permission.getPermissionName();
-            Optional<Permission> permissionsDB = permissionService.getPermissionByName(permissionName);
+            String permissionName = permission.permissionName();
+            Optional<PermissionDTO> permissionsDB = permissionService.getPermissionByName(permissionName);
             if(permissionsDB.isPresent()) {
                 return ResponseEntity
                         .status(HttpStatus.CONFLICT)
                         .body("Permission '" + permissionName + "' already exists.");
             }
 
-            Permission newPermission = permissionService.addPermission(permission);
+            PermissionDTO newPermission = permissionService.addPermission(permission);
             return ResponseEntity.status(HttpStatus.CREATED).body(newPermission);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -92,10 +93,10 @@ public class PermissionController {
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePermission(
             @PathVariable String id,
-            @Valid @RequestBody Permission permissionUpdates) {
+            @Valid @RequestBody PermissionDTO permissionUpdates) {
 
-        Permission existingPermission = getValidatePermission(id);
-        updatePermission(existingPermission, permissionUpdates);
+        PermissionDTO existingPermission = getValidatePermission(id);
+        updatePermissionDTO(existingPermission, permissionUpdates);
         return ResponseEntity.ok(permissionService.updatePermission(existingPermission));
     }
 
@@ -104,7 +105,7 @@ public class PermissionController {
         try {
             int idPermission = Integer.parseInt(id);
 
-            Optional<Permission> permissionDB = permissionService.getPermissionById(idPermission);
+            Optional<PermissionDTO> permissionDB = permissionService.getPermissionById(idPermission);
 
             if(permissionDB.isEmpty()) {
                 return ResponseEntity.notFound().build();
@@ -116,7 +117,7 @@ public class PermissionController {
         }
     }
 
-    private Permission getValidatePermission(String id) {
+    private PermissionDTO getValidatePermission(String id) {
         int permissionId;
         try {
             permissionId = Integer.parseInt(id);
@@ -131,10 +132,10 @@ public class PermissionController {
                 .orElseThrow(() -> new PermissionNotFoundException(permissionId));
     }
 
-    private void updatePermission(Permission existingPermission, Permission permissionUpdates) {
-
-        if (permissionUpdates.getPermissionName() != null) {
-            existingPermission.setPermissionName(permissionUpdates.getPermissionName());
-        }
+    private void updatePermissionDTO(PermissionDTO existingPermission, PermissionDTO permissionUpdates) {
+        new PermissionDTO(
+                existingPermission.id(),
+                permissionUpdates.permissionName() != null ? permissionUpdates.permissionName() : existingPermission.permissionName()
+        );
     }
 }

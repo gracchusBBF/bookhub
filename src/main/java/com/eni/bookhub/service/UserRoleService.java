@@ -1,12 +1,12 @@
 package com.eni.bookhub.service;
 
-import com.eni.bookhub.BO.UserRole;
+import com.eni.bookhub.dto.UserRoleDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserRoleService {
-    Optional<UserRole> getUserRoleByName(String role);
-    Optional<UserRole> getUserRoleById(Long id);
-    List<UserRole> getAllUserRoles();
+    Optional<UserRoleDTO> getUserRoleByName(String role);
+    Optional<UserRoleDTO> getUserRoleById(Integer id);
+    List<UserRoleDTO> getAllUserRoles();
 }

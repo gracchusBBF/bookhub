@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
+@ToString(of = {"id", "roleName"})
 @Builder
 
 @Entity
