@@ -1,21 +1,21 @@
 package com.eni.bookhub.service;
 
-import com.eni.bookhub.BO.Book;
+import com.eni.bookhub.dto.BookDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BookService {
-    List<Book> getBooks(int pageNum);
-    Optional<Book> getBookById(Integer bookId);
-    void addBook(Book book);
+    List<BookDTO> getBooks(int pageNum);
+    Optional<BookDTO> getBookById(Integer bookId);
+    BookDTO addBook(BookDTO book);
 
-    Optional<Book> getBookByTitle(String title);
+    Optional<BookDTO> getBookByTitle(String title);
 
-    Book updateBook(Book book);
+    BookDTO updateBook(BookDTO book);
     void deleteBook(Integer bookId);
 
-    Optional<List<Book>> searchBooks(int pageNum, String query);
+    Optional<List<BookDTO>> searchBooks(int pageNum, String query);
 
-    Optional<List<Book>> filterBooks(int pageNum, String category, String status);
+    Optional<List<BookDTO>> filterBooks(int pageNum, String category, String status);
 }

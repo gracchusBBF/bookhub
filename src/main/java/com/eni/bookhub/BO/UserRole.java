@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
+//@ToString(of = {"id", "roleName"})
 @Builder
 
 @Entity
@@ -27,12 +27,13 @@ public class UserRole {
     private String roleName;
 
     @OneToMany(mappedBy = "userRole")
+    @ToString.Exclude
     private List<User> users;
 
-/*    @ManyToMany
+    @ManyToMany
     @JoinTable(
-            name = "PERMISSION_ROLE_TEST",
+            name = "PERMISSION_ROLE",
             joinColumns = {@JoinColumn(name = "role_id")},
             inverseJoinColumns = {@JoinColumn(name = "permission_id")})
-    private List<Permission> listPermission = new ArrayList<>(); */
+    private List<Permission> listPermission = new ArrayList<>();
 }

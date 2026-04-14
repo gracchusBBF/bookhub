@@ -1,6 +1,6 @@
 package com.eni.bookhub.controller;
 
-import com.eni.bookhub.BO.Book;
+import com.eni.bookhub.dto.BookDTO;
 import com.eni.bookhub.exception.BookNotFoundException;
 import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.exception.InvalidBookIdException;
@@ -38,12 +38,12 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Optional<List<Book>>> getAllBooks(
+    public ResponseEntity<Optional<List<BookDTO>>> getAllBooks(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status) {
 
-        Optional<List<Book>> books;
+        Optional<List<BookDTO>> books;
 
         if ((category != null && !category.isBlank()) || (status != null && !status.isBlank())) {
             books = bookService.filterBooks(page, category, status);
@@ -64,18 +64,18 @@ public class BookController {
 
         int pageNum = (page != null) ? Integer.parseInt(page) : 1;
 
-        Optional<List<Book>> books =  bookService.searchBooks(pageNum, query);
+        Optional<List<BookDTO>> books =  bookService.searchBooks(pageNum, query);
         return ResponseEntity.ok(books);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookById(@PathVariable String id) {
-        Book book = getValidateBook(id);
+        BookDTO book = getValidateBookDTO(id);
         return ResponseEntity.ok(book);
     }
 
     @PostMapping
-    public ResponseEntity<?> addBookToLibrary(@Valid @RequestBody Book book) {
+    public ResponseEntity<?> addBookToLibrary(@Valid @RequestBody BookDTO book) {
         bookService.addBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(book);
 
@@ -83,22 +83,22 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBookFromLibrary(@PathVariable String id){
-        Book book = getValidateBook(id);
-        bookService.deleteBook(book.getId());
-        return ResponseEntity.ok("Le livre avec l'ID " + book.getId() + " a bien été supprimé");
+        BookDTO book = getValidateBookDTO(id);
+        bookService.deleteBook(book.id());
+        return ResponseEntity.ok("Le livre avec l'ID " + book.id() + " a bien été supprimé");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBook(
             @PathVariable String id,
-            @Valid @RequestBody Book bookUpdates) {
+            @Valid @RequestBody BookDTO bookUpdates) {
 
-        Book existingBook = getValidateBook(id);
-        updateBookField(existingBook, bookUpdates);
+        BookDTO existingBook = getValidateBookDTO(id);
+        mergeBookDTO(existingBook, bookUpdates);
         return ResponseEntity.ok(bookService.updateBook(existingBook));
     }
 
-    private Book getValidateBook(String id) {
+    private BookDTO getValidateBookDTO(String id) {
         int bookId;
         try {
             bookId = Integer.parseInt(id);
@@ -113,29 +113,17 @@ public class BookController {
                 .orElseThrow(() -> new BookNotFoundException(bookId));
     }
 
-    private void updateBookField(Book existingBook, Book bookUpdates) {
-        // Replace old with new fields for book table, without changing book_id (PK)
-        // or isbn (UK) which otherwise will prevent the save method.
-        if (bookUpdates.getTitle() != null) {
-            existingBook.setTitle(bookUpdates.getTitle());
-        }
-        if (bookUpdates.getLastName() != null) {
-            existingBook.setLastName(bookUpdates.getLastName());
-        }
-        if (bookUpdates.getFirstName() != null) {
-            existingBook.setFirstName(bookUpdates.getFirstName());
-        }
-        if (bookUpdates.getCategory() != null) {
-            existingBook.setCategory(bookUpdates.getCategory());
-        }
-        if (bookUpdates.getStatus() != null) {
-            existingBook.setStatus(bookUpdates.getStatus());
-        }
-        if (bookUpdates.getFrontCoverImg() != null) {
-            existingBook.setFrontCoverImg(bookUpdates.getFrontCoverImg());
-        }
-        if (bookUpdates.getCopyNumber() >= 0) {
-            existingBook.setCopyNumber(bookUpdates.getCopyNumber());
-        }
+    private void mergeBookDTO(BookDTO existingBook, BookDTO bookUpdates) {
+        new BookDTO(
+                existingBook.id(),
+                bookUpdates.title() != null ? bookUpdates.title() : existingBook.title(),
+                bookUpdates.lastName() != null ? bookUpdates.lastName() : existingBook.lastName(),
+                bookUpdates.firstName() != null ? bookUpdates.firstName() : existingBook.firstName(),
+                existingBook.isbn(),
+                bookUpdates.category() != null ? bookUpdates.category() : existingBook.category(),
+                bookUpdates.status() != null ? bookUpdates.status() : existingBook.status(),
+                bookUpdates.frontCoverImg() != null ? bookUpdates.frontCoverImg() : existingBook.frontCoverImg(),
+                bookUpdates.copyNumber() != null ? bookUpdates.copyNumber() : existingBook.copyNumber()
+        );
     }
 }

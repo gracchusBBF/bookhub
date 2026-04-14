@@ -1,6 +1,7 @@
 package com.eni.bookhub.repository;
 
 import com.eni.bookhub.BO.Book;
+import com.eni.bookhub.dto.BookDTO;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

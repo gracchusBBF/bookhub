@@ -1,4 +1,5 @@
 package com.eni.bookhub.BO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -77,6 +78,7 @@ public class Book {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToOne(mappedBy = "book")
+    @JsonManagedReference
     private Loan loans;
 
     @OneToMany(mappedBy = "book")

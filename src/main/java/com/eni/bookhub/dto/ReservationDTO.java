@@ -1,8 +1,9 @@
 package com.eni.bookhub.dto;
-import lombok.Data;
 
-@Data
-public class ReservationDTO {
-    private Integer bookId;
-    private Integer userId;
-}
+public record ReservationDTO(
+        int id,
+        String status,
+        Integer userId,
+        Integer bookId,
+        String bookTitle
+) {}
