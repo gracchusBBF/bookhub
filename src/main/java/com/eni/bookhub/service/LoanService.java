@@ -13,6 +13,10 @@ public interface LoanService {
 
     List<LoanDTO> listLoanByUserEmail(String userEmail);
 
+    List<LoanDTO> listActiveLoans();
+
+    List<LoanDTO> listOverdueLoans();
+
     Boolean getLoanById(int id);
 
     Boolean createLoan(LoanDTO loan);
