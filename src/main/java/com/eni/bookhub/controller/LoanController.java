@@ -38,8 +38,8 @@ public class LoanController {
     public List<LoanDTO> listLoans() {
         return loanServiceImpl.listLoans();
     }
-    @GetMapping(value = "/api/loans/{userId}")
-    public List<LoanDTO> listLoans(@PathVariable int userId) {
-        return loanServiceImpl.listLoanByUserId(userId);
+    @GetMapping(value = "/api/loans/{userEmail}")
+    public List<LoanDTO> listLoans(@PathVariable String userEmail) {
+        return loanServiceImpl.listLoanByUserEmail(userEmail);
     }
 }

@@ -34,6 +34,7 @@ public class Permission {
     @Column(name = "permission_name", nullable = false, unique = true, length = 100)
     private String permissionName;
 
+    @Builder.Default
     @ManyToMany(mappedBy = "listPermission")
     private List<UserRole> userRole = new ArrayList<>();
 }
