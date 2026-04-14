@@ -1,6 +1,8 @@
 package com.eni.bookhub.dto;
 
-import com.eni.bookhub.BO.UserRole;
+import com.eni.bookhub.BO.Reservation;
+
+import java.util.List;
 
 public record UserDTO(
         Integer id,
@@ -8,5 +10,8 @@ public record UserDTO(
         String phoneNumber,
         String firstName,
         String lastName,
-        UserRole userRole
+        UserRoleDTO userRole,
+        List<LoanDTO> loans,
+        List<ReservationDTO> reservations,
+        List<CommentDTO> comments
 ) {}

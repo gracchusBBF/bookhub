@@ -12,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString(of = {"id", "roleName"})
+//@ToString(of = {"id", "roleName"})
 @Builder
 
 @Entity
@@ -27,6 +27,7 @@ public class UserRole {
     private String roleName;
 
     @OneToMany(mappedBy = "userRole")
+    @ToString.Exclude
     private List<User> users;
 
     @ManyToMany

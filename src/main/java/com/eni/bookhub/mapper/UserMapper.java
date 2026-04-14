@@ -1,20 +1,72 @@
 package com.eni.bookhub.mapper;
 
 import com.eni.bookhub.BO.User;
-import com.eni.bookhub.dto.UserDTO;
+import com.eni.bookhub.dto.*;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class UserMapper {
     public UserDTO toDTO(User user) {
-        if (user == null) return null;
+        UserRoleDTO roleDTO = user.getUserRole() != null
+                ? new UserRoleDTO(user.getUserRole().getId(), user.getUserRole().getRoleName())
+                : null;
+
+        List<LoanDTO> loansDTO = user.getLoans() != null
+                ? user.getLoans().stream()
+                .map(loan -> new LoanDTO(
+                        loan.getId(),
+                        loan.getStartDate(),
+                        loan.getDeadline(),
+                        loan.getReturnDate(),
+                        user.getId(),
+                        loan.getBook() != null ? loan.getBook().getId() : null,
+                        loan.getBook() != null ? loan.getBook().getTitle() : null
+                ))
+                .toList()
+                : new ArrayList<>();
+
+        List<ReservationDTO> reservationDTO = (user.getReservations() != null)
+                ? user.getReservations().stream()
+                .map(res -> new ReservationDTO(
+                        res.getId(),
+                        res.getStatus(),
+                        user.getId(),
+                        res.getBook().getId(),
+                        res.getBook().getTitle()
+                ))
+                .toList()
+                : List.of();
+
+        List<CommentDTO> commentDTO = (user.getComments() != null)
+                ? user.getComments().stream()
+                .filter(res -> res.getUser() != null && res.getBook() != null)
+                .map(res -> new CommentDTO(
+                        res.getId(),
+                        res.getRate(),
+                        res.getComment(),
+                        res.getStatus(),
+                        res.getUser().getId(),
+                        res.getUser().getFirstName(),
+                        res.getUser().getLastName(),
+                        res.getBook().getId(),
+                        res.getBook().getTitle()
+                ))
+                .toList()
+                : List.of();
+
         return new UserDTO(
                 user.getId(),
                 user.getEmail(),
-                user.getLastName(),
                 user.getFirstName(),
+                user.getLastName(),
                 user.getPhoneNumber(),
-                user.getUserRole()
+                roleDTO,
+                loansDTO,
+                reservationDTO,
+                commentDTO
         );
     }
 
@@ -26,7 +78,6 @@ public class UserMapper {
                 .firstName(dto.firstName())
                 .email(dto.email())
                 .phoneNumber(dto.phoneNumber())
-                .userRole(dto.userRole())
                 .build();
     }
 }
