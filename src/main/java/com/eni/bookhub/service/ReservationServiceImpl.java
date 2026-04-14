@@ -24,19 +24,19 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public boolean reserveBook(ReservationDTO reservationDTO) {
         // 1. Récupérer les entités complètes depuis la BDD (nécessite les repositories correspondants)
-        Book book = bookRepository.findById(reservationDTO.getBookId())
+      /*  Book book = bookRepository.findById(reservationDTO.getBookId())
                 .orElseThrow(() -> new RuntimeException("Livre introuvable."));
 
         User user = userRepository.findById(reservationDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable."));
-
-        // 2. Créer l'objet métier (Entité)
+*/
+      /*  // 2. Créer l'objet métier (Entité)
         Reservation reservation = new Reservation();
         reservation.setBook(book);
-        reservation.setUser(user);
+        reservation.setUser(user);*/
 
-        // 3. Sauvegarder l'entité
-        reservationRepository.save(reservation);
+      /*  // 3. Sauvegarder l'entité
+        reservationRepository.save(reservation);*/
         return false;
     }
 }

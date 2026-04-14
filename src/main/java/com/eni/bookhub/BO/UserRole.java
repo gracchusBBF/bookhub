@@ -30,6 +30,7 @@ public class UserRole {
     @ToString.Exclude
     private List<User> users;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "PERMISSION_ROLE",

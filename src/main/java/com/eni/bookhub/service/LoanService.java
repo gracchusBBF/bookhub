@@ -11,7 +11,7 @@ public interface LoanService {
 
     List<LoanDTO> listLoans();
 
-    List<LoanDTO> listLoanByUserId(int userId);
+    List<LoanDTO> listLoanByUserEmail(String userEmail);
 
     Boolean getLoanById(int id);
 
