@@ -42,7 +42,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/roles/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/loans/**").hasAuthority("ROLE_LIBRARIAN") // ajouter les autres urls à restreindre selon le rôle
+                        .requestMatchers("/api/loans/{id}/return").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers("/api/loans/{id}/return").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.POST, "/api/books").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.PUT, "/api/books").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/comments/{commentId}/status").hasAuthority("ROLE_LIBRARIAN") // correspond à l'endpoint de màj du status
+                        .requestMatchers("/api/comments/status/{status}").hasAuthority("ROLE_LIBRARIAN")
                         .anyRequest().authenticated()
                 )
 
@@ -77,12 +83,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // à remplacer par la config suivante (commentée) pour autoriser uniquement le front à se connecter à l'api
-        configuration.setAllowedOrigins(List.of(
-                "*"
-        ));
-
-        // configuration.setAllowedOrigins(List.of("http://localhost:4200"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
 
         configuration.setAllowedMethods(List.of(
                 "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
@@ -93,8 +94,7 @@ public class SecurityConfig {
                 "Content-Type"
         ));
 
-        // à réactiver quand le setAllowedOrigins ne sera plus sur all (*)
-        // configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
