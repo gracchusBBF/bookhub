@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/roles/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/api/loans/**").hasAuthority("ROLE_LIBRARIAN") // ajouter les autres urls à restreindre selon le rôle
                         .anyRequest().authenticated()
