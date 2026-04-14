@@ -1,27 +1,35 @@
 package com.eni.bookhub.service;
 
-import com.eni.bookhub.BO.UserRole;
+import com.eni.bookhub.dto.UserRoleDTO;
+import com.eni.bookhub.mapper.RoleMapper;
 import com.eni.bookhub.repository.UserRoleRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Service
-public class UserRoleServiceImpl {
+public class UserRoleServiceImpl implements UserRoleService {
     private UserRoleRepository userRoleRepository;
+    private RoleMapper roleMapper;
 
-    public Optional<UserRole> getUserRoleById(Integer id){
-        return userRoleRepository.getUserRoleById(id);
+    public Optional<UserRoleDTO> getUserRoleById(Integer id){
+        return userRoleRepository
+                .getUserRoleById(id)
+                .map(roleMapper::toDTO);
     }
-    public Optional<UserRole> getUserRoleByName(String name) {
-        return userRoleRepository.getUserRoleByRoleName(name);
+    public Optional<UserRoleDTO> getUserRoleByName(String name) {
+        return userRoleRepository
+                .getUserRoleByRoleName(name)
+                .map(roleMapper::toDTO);
     }
-    public List<UserRole> getAllUserRoles() {
-        return userRoleRepository.findAll();
+    public List<UserRoleDTO> getAllUserRoles() {
+        return userRoleRepository
+                .findAll()
+                .stream()
+                .map(roleMapper::toDTO)
+                .toList();
     }
 }

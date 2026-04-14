@@ -46,15 +46,15 @@ public class LoanServiceImpl implements LoanService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public List<LoanDTO> listLoanByUserId(int userId) {
         return loanRepository.findByUserId(userId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-
     public Boolean getLoanById(int id) {
-        return loanRepository.findById(id).isPresent(); // ✅ simple et correct
+        return loanRepository.findById(id).isPresent();
     }
     public Boolean createLoan(LoanDTO loanDTO) {
         try {
