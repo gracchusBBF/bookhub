@@ -53,6 +53,18 @@ public class LoanServiceImpl implements LoanService {
                 .collect(Collectors.toList());
     }
 
+    public List<LoanDTO> listActiveLoans() {
+        return loanRepository.findActiveLoans().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<LoanDTO> listOverdueLoans() {
+        return loanRepository.findOverdueLoans().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public Boolean getLoanById(int id) {
         return loanRepository.findById(id).isPresent();
     }
