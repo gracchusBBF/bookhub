@@ -50,6 +50,7 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 110)
     private String lastName;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<Comment> comments = new ArrayList<>();
 

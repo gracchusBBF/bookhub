@@ -47,8 +47,8 @@ public class LoanServiceImpl implements LoanService {
                 .collect(Collectors.toList());
     }
 
-    public List<LoanDTO> listLoanByUserId(int userId) {
-        return loanRepository.findByUserId(userId).stream()
+    public List<LoanDTO> listLoanByUserEmail(String userEmail) {
+        return loanRepository.findByUserEmail(userEmail).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
@@ -127,7 +127,7 @@ public class LoanServiceImpl implements LoanService {
 
     // Garde les méthodes privées avec les Entités pour la logique interne
     private boolean isUserAllowed(User user) {
-        List<Loan> userLoans = loanRepository.findByUserId(user.getId());
+        List<Loan> userLoans = loanRepository.findByUserEmail(user.getEmail());
         LocalDate today = LocalDate.now();
 
         for (Loan loan : userLoans) {
@@ -142,7 +142,7 @@ public class LoanServiceImpl implements LoanService {
     }
 
     private boolean isUserFull(User user) {
-        return loanRepository.findByUserId(user.getId()).stream()
+        return loanRepository.findByUserEmail(user.getEmail()).stream()
                 .filter(l -> l.getReturnDate() == null)
                 .count() >= 3;
     }

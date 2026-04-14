@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Integer> {
+    List<Loan> findByUserEmail(String email);
     List<Loan> findByUserId(int userId);
 
     // Active loans

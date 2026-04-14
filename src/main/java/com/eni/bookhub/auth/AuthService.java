@@ -1,10 +1,12 @@
 package com.eni.bookhub.auth;
 
+import com.eni.bookhub.BO.UserRole;
 import com.eni.bookhub.dto.AuthRequest;
 import com.eni.bookhub.dto.AuthResponse;
 import com.eni.bookhub.dto.RegisterRequest;
 import com.eni.bookhub.repository.UserRepository;
 import com.eni.bookhub.BO.User;
+import com.eni.bookhub.repository.UserRoleRepository;
 import com.eni.bookhub.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,18 +20,21 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse register(RegisterRequest request) {
+        UserRole defaultRole = userRoleRepository.getUserRoleByRoleName("USER")
+                .orElseThrow(() -> new RuntimeException("Le rôle USER n'existe pas en base de données"));
         User user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword())) // ← encodage du mdp
                 .phoneNumber(request.getPhoneNumber())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .userRole(request.getRole())
+                .userRole(defaultRole)
                 .build();
         userRepository.save(user);
 
