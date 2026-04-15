@@ -114,7 +114,7 @@ public class DataInitializer implements CommandLineRunner {
         //     • statuts variés : AVAILABLE / UNAVAILABLE / PENDING             //
         //     • catégories variées, copyNumber variable                        //
         // ================================================================== //
-        final String COVER = "https://example.com/covers/default.jpg";
+        final String COVER = "/images/cover.jpg";
 
         List<Book> books = List.of(
                 // ---- Conte (3) ----
