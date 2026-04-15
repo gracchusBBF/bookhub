@@ -96,4 +96,6 @@ public class LoanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PostMapping
 }
