@@ -65,6 +65,14 @@ public class LoanServiceImpl implements LoanService {
                 .collect(Collectors.toList());
     }
 
+    public Integer numberTotalLoans() {
+        return loanRepository.totalLoans();
+    }
+
+    public Integer numberActiveLoans() {
+        return loanRepository.activeLoans();
+    }
+
     public Boolean getLoanById(int id) {
         return loanRepository.findById(id).isPresent();
     }

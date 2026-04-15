@@ -20,4 +20,10 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     // Overdue
     @Query("SELECT l FROM Loan l WHERE l.returnDate IS NULL AND l.deadline < CURRENT DATE ")
     List<Loan> findOverdueLoans();
+
+    @Query("SELECT COUNT(l) FROM Loan l")
+    Integer totalLoans();
+
+    @Query("SELECT COUNT(l) FROM Loan l WHERE l.returnDate IS NULL")
+    Integer activeLoans();
 }
