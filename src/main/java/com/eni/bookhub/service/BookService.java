@@ -1,12 +1,13 @@
 package com.eni.bookhub.service;
 
 import com.eni.bookhub.dto.BookDTO;
+import com.eni.bookhub.dto.PageResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BookService {
-    List<BookDTO> getBooks(int pageNum);
+    PageResponseDTO<BookDTO> getBooks(int pageNum);
     Optional<BookDTO> getBookById(Integer bookId);
     BookDTO addBook(BookDTO book);
 

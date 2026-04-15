@@ -2,10 +2,12 @@ package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.Book;
 import com.eni.bookhub.dto.BookDTO;
+import com.eni.bookhub.dto.PageResponseDTO;
 import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.mapper.BookMapper;
 import com.eni.bookhub.repository.BookRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,13 +23,21 @@ public class BookServiceImpl implements BookService {
     private BookMapper bookMapper;
 
     @Override
-    public List<BookDTO> getBooks(int pageNum) {
+    public PageResponseDTO<BookDTO> getBooks(int pageNum) {
         Pageable pageable = PageRequest.of(pageNum - 1, 20);
-        return bookRepository.findAll(pageable)
-                .getContent()
+        Page<Book> page = bookRepository.findAll(pageable);
+
+        List<BookDTO> content = page.getContent()
                 .stream()
                 .map(bookMapper::toDTO)
                 .toList();
+
+        return new PageResponseDTO<>(
+                content,
+                page.getTotalPages(),
+                page.getTotalElements(),
+                pageNum
+        );
     }
 
     @Override

@@ -35,8 +35,10 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
+        List<UserDTO> usersList = userService.getAll();
+        System.out.println("Users ???? " + usersList);
         try {
-            List<UserDTO> usersList = userService.getAll();
+
             if (usersList.isEmpty() || usersList == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }

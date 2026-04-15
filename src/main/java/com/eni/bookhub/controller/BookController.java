@@ -1,6 +1,7 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.dto.BookDTO;
+import com.eni.bookhub.dto.PageResponseDTO;
 import com.eni.bookhub.exception.BookNotFoundException;
 import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.exception.InvalidBookIdException;
@@ -38,23 +39,17 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Optional<List<BookDTO>>> getAllBooks(
+    public ResponseEntity<PageResponseDTO<BookDTO>> getAllBooks(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status) {
 
-        Optional<List<BookDTO>> books;
+        PageResponseDTO<BookDTO> result = bookService.getBooks(page);
 
-        if ((category != null && !category.isBlank()) || (status != null && !status.isBlank())) {
-            books = bookService.filterBooks(page, category, status);
-        } else {
-            books = Optional.ofNullable(bookService.getBooks(page));
-        }
-
-        if (books.isEmpty()) {
+        if (result.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(books);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/search")

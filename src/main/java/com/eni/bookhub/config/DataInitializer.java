@@ -243,6 +243,15 @@ public class DataInitializer implements CommandLineRunner {
         loanRepository.saveAll(List.of(loanRetourne1, loan1, loan2, loan3, loanRetard1, loanRetard2));
         log.info("6 emprunts insérés pour Claire (USER).");
 
+        // Mise à jour du statut des livres faisant l'objet d'un emprunt actif
+        lePetitPrince.setStatus("UNAVAILABLE");
+        germinal.setStatus("UNAVAILABLE");
+        anneFrank.setStatus("UNAVAILABLE");
+        dune.setStatus("UNAVAILABLE");
+        harryPotter.setStatus("UNAVAILABLE");
+        bookRepository.saveAll(List.of(lePetitPrince, germinal, anneFrank, dune, harryPotter));
+        log.info("Statut UNAVAILABLE appliqué aux 5 livres empruntés activement.");
+
         // ================================================================== //
         //  6. RESERVATIONS – 5 réservations pour Claire (USER)               //
         // ================================================================== //

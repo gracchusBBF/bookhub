@@ -15,8 +15,7 @@ public class LoanDTO {
     private Timestamp startDate;
     private Date returnDate;
     private Date deadline;
-    private Integer userId;
+    private String userEmail;
     private Integer bookId;
     private String bookTitle;
-
 }
