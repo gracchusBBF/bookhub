@@ -190,8 +190,25 @@ public class DataInitializer implements CommandLineRunner {
         Book mythe         = books.get(10);  // Philosophie – UNAVAILABLE
 
         // ================================================================== //
-        //  5. EMPRUNTS – 3 emprunts pour Claire (USER)                        //
+        //  5. EMPRUNTS – 6 emprunts pour Claire (USER)                        //
         // ================================================================== //
+
+        // Emprunts retournés
+        Loan loanRetourne1 = new Loan();
+        loanRetourne1.setUser(regularUser);
+        loanRetourne1.setBook(lesMiserables);
+        loanRetourne1.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(60)));
+        loanRetourne1.setReturnDate(Date.valueOf(LocalDate.now().minusDays(46)));
+        loanRetourne1.setDeadline(Date.valueOf(LocalDate.now().minusDays(46)));
+//
+//        Loan loanRetourne2 = new Loan();
+//        loanRetourne2.setUser(regularUser);
+//        loanRetourne2.setBook(lePetitPrince);
+//        loanRetourne2.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(90)));
+//        loanRetourne2.setDeadline(Date.valueOf(LocalDate.now().minusDays(76)));
+
+        // Emprunts actifs
+
         Loan loan1 = new Loan();
         loan1.setUser(regularUser);
         loan1.setBook(lePetitPrince);
@@ -210,8 +227,21 @@ public class DataInitializer implements CommandLineRunner {
         loan3.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
         loan3.setDeadline(Date.valueOf(LocalDate.now().plusDays(13)));
 
-        loanRepository.saveAll(List.of(loan1, loan2, loan3));
-        log.info("3 emprunts insérés pour Claire (USER).");
+        // Retards
+        Loan loanRetard1 = new Loan();
+        loanRetard1.setUser(regularUser);
+        loanRetard1.setBook(dune);
+        loanRetard1.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(20)));
+        loanRetard1.setDeadline(Date.valueOf(LocalDate.now().minusDays(6)));
+
+        Loan loanRetard2 = new Loan();
+        loanRetard2.setUser(regularUser);
+        loanRetard2.setBook(harryPotter);
+        loanRetard2.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(22)));
+        loanRetard2.setDeadline(Date.valueOf(LocalDate.now().minusDays(8)));
+
+        loanRepository.saveAll(List.of(loanRetourne1, loan1, loan2, loan3, loanRetard1, loanRetard2));
+        log.info("6 emprunts insérés pour Claire (USER).");
 
         // ================================================================== //
         //  6. RESERVATIONS – 5 réservations pour Claire (USER)               //

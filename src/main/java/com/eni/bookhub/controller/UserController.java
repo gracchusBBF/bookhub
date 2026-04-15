@@ -1,6 +1,7 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.User;
+import com.eni.bookhub.dto.ChangePasswordDTO;
 import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.service.UserService;
 import jakarta.validation.Valid;
@@ -19,6 +20,17 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordDTO request) {
+        try {
+            // Logique : trouver l'user par mail, vérifier l'ancien pass, sauvegarder le nouveau
+            userService.updatePassword(request);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping
