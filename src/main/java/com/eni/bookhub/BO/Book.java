@@ -77,9 +77,10 @@ public class Book {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "book")
-    @JsonManagedReference
-    private Loan loans;
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+//    @JoinColumn(name = "loan_id", nullable = false)
+    @JsonManagedReference("book-loan")
+    private List<Loan> loans = new ArrayList<>();
 
     @OneToMany(mappedBy = "book")
     private List<Reservation> reservations;
