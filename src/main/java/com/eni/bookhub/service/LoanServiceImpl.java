@@ -115,7 +115,7 @@ public class LoanServiceImpl implements LoanService {
         }
     }
 
-    public Boolean updateLoan(int id) {
+    public Boolean returnLoan(int id) {
         try {
             Loan loan = loanRepository.findById(id).orElse(null);
             if (loan == null) return false;
@@ -123,6 +123,9 @@ public class LoanServiceImpl implements LoanService {
             Book book = loan.getBook();
             loan.setReturnDate(new java.sql.Date(System.currentTimeMillis()));
 
+            if(book.getCopyNumber() == 0) {
+                book.setStatus("AVAILABLE");
+            }
             book.setCopyNumber(book.getCopyNumber() + 1);
 
             bookRepository.save(book);

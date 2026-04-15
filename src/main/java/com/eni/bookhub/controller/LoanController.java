@@ -26,9 +26,11 @@ public class LoanController {
     }
 
     @PutMapping("/api/loans/{id}/return")
-    public ResponseEntity<Void> returnBook(@PathVariable int id) {
-        if (loanServiceImpl.updateLoan(id)){
-            return ResponseEntity.ok().build();
+    public ResponseEntity<?> returnBook(@PathVariable int id) {
+        if (loanServiceImpl.returnLoan(id)){
+            String msg = "Le livre id " + id + " a bien été retourné.";
+//            return ResponseEntity.status(HttpStatus.OK).body(msg);
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
         else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
