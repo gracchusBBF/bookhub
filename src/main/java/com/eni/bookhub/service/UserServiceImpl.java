@@ -1,9 +1,7 @@
 package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.User;
-import com.eni.bookhub.dto.ChangePasswordDTO;
-import com.eni.bookhub.dto.DeleteAccountDTO;
-import com.eni.bookhub.dto.UserDTO;
+import com.eni.bookhub.dto.*;
 import com.eni.bookhub.mapper.UserMapper;
 import com.eni.bookhub.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -19,14 +17,53 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = new UserMapper();
     }
-    private UserMapper userMapper;
+    @Override
+    public UserDetailsDTO getUserDetails(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
+        UserDetailsDTO dto = new UserDetailsDTO();
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+
+        return dto;
+    }
+    @Override
+    public void partialUpdate(String email, UserUpdateDTO dto) {
+        // 1. Récupérer l'existant ou lancer une erreur
+        User existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        // 2. Vérification manuelle de chaque champ
+        if (dto.getEmail() != null) {
+            existingUser.setEmail(dto.getEmail());
+        }
+
+        if (dto.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(dto.getPhoneNumber());
+        }
+
+        if (dto.getFirstName() != null) {
+            existingUser.setFirstName(dto.getFirstName());
+        }
+
+        if (dto.getLastName() != null) {
+            existingUser.setLastName(dto.getLastName());
+        }
+
+        // 3. Sauvegarder les modifications
+        userRepository.save(existingUser);
+    }
     @Override
     public Optional<UserDTO> getUserById(Integer userId) {
 
@@ -116,5 +153,42 @@ public class UserServiceImpl implements UserService {
             // 4. On sauvegarde
             userRepository.save(userEntity);
         });
+    }
+    @Override
+    public void updateUserDetails(UserUpdateDTO dto) {
+        if (dto == null || dto.getEmail() == null) {
+            throw new RuntimeException("L'email est requis pour identifier l'utilisateur");
+        }
+
+        // 1. Récupérer l'utilisateur existant
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec l'email : " + dto.getEmail()));
+
+        // 2. Mise à jour partielle (Ta stratégie des "if")
+        if (dto.getFirstName() != null) {
+            user.setFirstName(dto.getFirstName());
+        }
+        if (dto.getLastName() != null) {
+            user.setLastName(dto.getLastName());
+        }
+        if (dto.getPhoneNumber() != null) {
+            user.setPhoneNumber(dto.getPhoneNumber());
+        }
+
+        // Si tu autorises le changement d'email, ajoute-le ici
+        // (Attention : cela impactera tes futures recherches par email)
+        // if (dto.getEmail() != null) { user.setEmail(dto.getEmail()); }
+
+        // 3. Sauvegarder en base
+        User savedUser = userRepository.save(user);
+
+        // 4. Retourner le format UserDetailsDTO pour le Dashboard Angular
+        UserDetailsDTO response = new UserDetailsDTO();
+        response.setEmail(savedUser.getEmail());
+        response.setFirstName(savedUser.getFirstName());
+        response.setLastName(savedUser.getLastName());
+        response.setPhoneNumber(savedUser.getPhoneNumber());
+
+
     }
 }
