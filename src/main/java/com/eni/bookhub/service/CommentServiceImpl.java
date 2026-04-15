@@ -39,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDTO updateStatus(int commentId, String status) {
 
-        List<String> allowedStatus = List.of("approuved", "refused", "pending");
+        List<String> allowedStatus = List.of("APPROUVED", "REFUSED", "PENDING");
         if (!allowedStatus.contains(status.toUpperCase())) {
             throw new IllegalArgumentException(
                     "statut invalide : " + status + ". valeurs autorisées : " + allowedStatus
