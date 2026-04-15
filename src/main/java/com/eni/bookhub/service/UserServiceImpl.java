@@ -5,6 +5,7 @@ import com.eni.bookhub.dto.ChangePasswordDTO;
 import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.mapper.UserMapper;
 import com.eni.bookhub.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Transactional
     public void delete(int userId) {
         userRepository.deleteUserById(userId);
     }
