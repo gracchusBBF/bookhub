@@ -24,5 +24,5 @@ public interface LoanService {
 
     Boolean createLoan(LoanDTO loan);
 
-    Boolean updateLoan(int id);
+    Boolean returnLoan(int id);
 }
