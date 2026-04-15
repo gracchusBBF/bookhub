@@ -2,6 +2,7 @@ package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.User;
 import com.eni.bookhub.dto.ChangePasswordDTO;
+import com.eni.bookhub.dto.DeleteAccountDTO;
 import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.mapper.UserMapper;
 import com.eni.bookhub.repository.UserRepository;
@@ -92,5 +93,28 @@ public class UserServiceImpl implements UserService {
 
         // 4. Sauvegarder l'entité complète (l'ID est déjà dedans, donc c'est un UPDATE)
         userRepository.save(existingUser);
+    }
+
+    @Override
+    public void deleteAccount(DeleteAccountDTO userDto) {
+        // 1. On cherche l'utilisateur
+        userRepository.getUserByEmail(userDto.getEmail()).ifPresent(userEntity -> {
+
+            // 2. Vérification du mot de passe
+            // On compare le mot de passe clair du DTO avec le mot de passe encodé en base
+            if (!passwordEncoder.matches(userDto.getPassword(), userEntity.getPassword())) {
+                throw new RuntimeException("Mot de passe incorrect : suppression impossible.");
+            }
+
+            // 3. Si c'est bon, on anonymise
+            userEntity.setEmail("deleted_" + userEntity.getId() + "@deleted.local");
+            userEntity.setPhoneNumber("deleted_" + userEntity.getId());
+            userEntity.setPassword("********"); // pas de contrainte d'unicité
+            userEntity.setLastName("Deleted");
+            userEntity.setFirstName("User");
+
+            // 4. On sauvegarde
+            userRepository.save(userEntity);
+        });
     }
 }

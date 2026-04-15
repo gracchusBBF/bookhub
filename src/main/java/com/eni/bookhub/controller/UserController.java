@@ -2,6 +2,7 @@ package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.User;
 import com.eni.bookhub.dto.ChangePasswordDTO;
+import com.eni.bookhub.dto.DeleteAccountDTO;
 import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.service.UserService;
 import jakarta.validation.Valid;
@@ -116,5 +117,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
+
+    @PutMapping("/delete-account")
+    public ResponseEntity<?> updateAccount(@Valid @RequestBody DeleteAccountDTO user){
+        try {
+            userService.deleteAccount(user);
+            return ResponseEntity.status(HttpStatus.OK).body("Le compte a bien été supprimé.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
 
 }
