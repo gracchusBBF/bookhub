@@ -1,6 +1,7 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.dto.LoanDTO;
+import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.service.LoanServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,35 @@ public class LoanController {
     public List<LoanDTO> listLoans() {
         return loanServiceImpl.listLoans();
     }
-    @GetMapping(value = "/api/loans/{userId}")
-    public List<LoanDTO> listLoans(@PathVariable int userId) {
-        return loanServiceImpl.listLoanByUserId(userId);
+
+    @GetMapping("/api/loans/active")
+    public ResponseEntity<?> listActiveLoans() {
+        try {
+            List<LoanDTO> activeLoansList = loanServiceImpl.listActiveLoans();
+            if (activeLoansList.isEmpty() || activeLoansList == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(activeLoansList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/loans/overdue")
+    public ResponseEntity<?> listOverdueLoans() {
+        try {
+            List<LoanDTO> overdueLoansList = loanServiceImpl.listOverdueLoans();
+            if (overdueLoansList == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(overdueLoansList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/api/loans/{userEmail}")
+    public List<LoanDTO> listLoans(@PathVariable String userEmail) {
+        return loanServiceImpl.listLoanByUserEmail(userEmail);
     }
 }

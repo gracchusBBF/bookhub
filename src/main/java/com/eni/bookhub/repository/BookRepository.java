@@ -31,4 +31,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
             "(:category IS NULL OR LOWER(b.category) LIKE LOWER(CONCAT('%', :category, '%'))) AND " +
             "(:status IS NULL OR LOWER(b.status) = LOWER(:status))")
     Page<Book> getBooksByFilters(@Param("category") String category, @Param("status") String status, @NonNull Pageable pageable);
+
+    
 }
