@@ -70,4 +70,30 @@ public class LoanController {
     public List<LoanDTO> listLoans(@PathVariable String userEmail) {
         return loanServiceImpl.listLoanByUserEmail(userEmail);
     }
+
+    @GetMapping(value = "/api/loans/stats/totalLoans")
+    public ResponseEntity<String> totalLoans() {
+        try {
+            String numberTotalLoans = loanServiceImpl.numberTotalLoans().toString();
+            if (numberTotalLoans == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(numberTotalLoans);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/api/loans/stats/activeLoans")
+    public ResponseEntity<String> activeLoans() {
+        try {
+            String numberActiveLoans = loanServiceImpl.numberActiveLoans().toString();
+            if (numberActiveLoans == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(numberActiveLoans);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
