@@ -22,7 +22,7 @@ public class CommentCreateDTO {
     private String comment;
 
     @NotNull
-    private int userId;
+    private String userEmail;
 
     @NotNull
     private int bookId;
