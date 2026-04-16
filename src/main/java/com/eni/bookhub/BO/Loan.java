@@ -25,11 +25,12 @@ public class Loan {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference("user-loan")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("book-loan")
     private Book book;
 
     @Column(name = "deadline", nullable = false)
