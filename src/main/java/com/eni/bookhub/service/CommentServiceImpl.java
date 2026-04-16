@@ -25,8 +25,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDTO saveComment(CommentCreateDTO comment) {
 
-        User user = userRepository.findById(comment.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("l'utisateur n'a pas été trouvé : " + comment.getUserId()));
+        User user = userRepository.findByEmail(comment.getUserEmail())
+                .orElseThrow(() -> new RuntimeException("l'utisateur n'a pas été trouvé : " + comment.getUserEmail()));
 
         Book book = bookRepository.findById(comment.getBookId())
                 .orElseThrow(() -> new EntityNotFoundException("le livre n'a pas été trouvé : " + comment.getBookId()));

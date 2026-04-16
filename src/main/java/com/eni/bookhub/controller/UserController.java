@@ -2,6 +2,11 @@ package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.User;
 import com.eni.bookhub.dto.*;
+import com.eni.bookhub.dto.ChangePasswordDTO;
+import com.eni.bookhub.dto.UpdateRoleUserDTO;
+import com.eni.bookhub.dto.UserDTO;
+import com.eni.bookhub.dto.UserRoleDTO;
+import com.eni.bookhub.dto.UserUpdateDTO;
 import com.eni.bookhub.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -143,5 +148,16 @@ public class UserController {
 
     }
 
+
+    @PatchMapping("/{id}/role")
+    public ResponseEntity<?> updateRole(@PathVariable int id, @RequestBody UserRoleDTO roleDTO) {
+        try {
+            final Optional<UserDTO> user = userService.getUserById(id);
+            userService.updateRole(id, roleDTO.getId());
+            return ResponseEntity.status(HttpStatus.OK).body("le statut de l'utilisateur " +  user.toString() + "a été changé pour " + roleDTO.getId());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 }

@@ -17,8 +17,8 @@ public class RoleMapper {
     public UserRole toEntity(UserRoleDTO dto) {
         if (dto == null) return null;
         return UserRole.builder()
-                .id(dto.id())
-                .roleName(dto.roleName())
+                .id(dto.getId())
+                .roleName(dto.getRoleName())
                 .build();
     }
 }
