@@ -105,8 +105,17 @@ public class DataInitializer implements CommandLineRunner {
                 .userRole(roleUser)
                 .build();
 
-        userRepository.saveAll(List.of(admin, librarian, regularUser));
-        log.info("3 utilisateurs insérés (ADMIN → Alice, LIBRARIAN → Bernard, USER → Claire).");
+        User regularUser2 = User.builder()
+                .firstName("Ousmane")
+                .lastName("Dembélé")
+                .email("ousmane.dembele@bookhub.fr")
+                .password(passwordEncoder.encode("User1234!"))
+                .phoneNumber("0609101113")
+                .userRole(roleUser)
+                .build();
+
+        userRepository.saveAll(List.of(admin, librarian, regularUser, regularUser2));
+        log.info("4 utilisateurs insérés (ADMIN → Alice, LIBRARIAN → Bernard, USER → Claire, Ousmane).");
 
         // ================================================================== //
         //  4. LIVRES – 40 livres                                               //
@@ -114,7 +123,7 @@ public class DataInitializer implements CommandLineRunner {
         //     • statuts variés : AVAILABLE / UNAVAILABLE / PENDING             //
         //     • catégories variées, copyNumber variable                        //
         // ================================================================== //
-        final String COVER = "https://example.com/covers/default.jpg";
+        final String COVER = "/images/cover.jpg";
 
         List<Book> books = List.of(
                 // ---- Conte (3) ----
@@ -187,11 +196,39 @@ public class DataInitializer implements CommandLineRunner {
         Book harryPotter   = books.get(22);  // Fantasy     – AVAILABLE
         Book dune          = books.get(6);   // SF          – AVAILABLE
         Book anneFrank     = books.get(39);  // Biographie  – AVAILABLE
+        Book gandhi        = books.get(38);  // Biographie  – AVAILABLE
         Book mythe         = books.get(10);  // Philosophie – UNAVAILABLE
 
+        log.info("Gandhi: " + gandhi.toString());
+
         // ================================================================== //
-        //  5. EMPRUNTS – 3 emprunts pour Claire (USER)                        //
+        //  5. EMPRUNTS – 6 emprunts pour Claire (USER)                        //
         // ================================================================== //
+
+        // Emprunts retournés
+        Loan loanRetourne1 = new Loan();
+        loanRetourne1.setUser(regularUser);
+        loanRetourne1.setBook(lesMiserables);
+        loanRetourne1.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(60)));
+        loanRetourne1.setReturnDate(Date.valueOf(LocalDate.now().minusDays(46)));
+        loanRetourne1.setDeadline(Date.valueOf(LocalDate.now().minusDays(46)));
+
+        Loan loanRetourne2 = new Loan();
+        loanRetourne2.setUser(regularUser2);
+        loanRetourne2.setBook(gandhi);
+        loanRetourne2.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(90)));
+        loanRetourne2.setReturnDate(Date.valueOf(LocalDate.now().minusDays(46)));
+        loanRetourne2.setDeadline(Date.valueOf(LocalDate.now().minusDays(76)));
+
+        Loan loanRetourne3 = new Loan();
+        loanRetourne3.setUser(regularUser2);
+        loanRetourne3.setBook(lePetitPrince);
+        loanRetourne3.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(114)));
+        loanRetourne3.setReturnDate(Date.valueOf(LocalDate.now().minusDays(46)));
+        loanRetourne3.setDeadline(Date.valueOf(LocalDate.now().minusDays(100)));
+
+        // Emprunts actifs
+
         Loan loan1 = new Loan();
         loan1.setUser(regularUser);
         loan1.setBook(lePetitPrince);
@@ -210,8 +247,21 @@ public class DataInitializer implements CommandLineRunner {
         loan3.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
         loan3.setDeadline(Date.valueOf(LocalDate.now().plusDays(13)));
 
-        loanRepository.saveAll(List.of(loan1, loan2, loan3));
-        log.info("3 emprunts insérés pour Claire (USER).");
+        // Retards
+        Loan loanRetard1 = new Loan();
+        loanRetard1.setUser(regularUser);
+        loanRetard1.setBook(dune);
+        loanRetard1.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(20)));
+        loanRetard1.setDeadline(Date.valueOf(LocalDate.now().minusDays(6)));
+
+        Loan loanRetard2 = new Loan();
+        loanRetard2.setUser(regularUser);
+        loanRetard2.setBook(harryPotter);
+        loanRetard2.setStartDate(Timestamp.valueOf(LocalDateTime.now().minusDays(22)));
+        loanRetard2.setDeadline(Date.valueOf(LocalDate.now().minusDays(8)));
+
+        loanRepository.saveAll(List.of(loanRetourne1, loanRetourne2, loanRetourne3, loan1, loan2, loan3, loanRetard1, loanRetard2));
+        log.info("6 emprunts insérés pour Claire (USER) et pour Ousmane (USER).");
 
         // ================================================================== //
         //  6. RESERVATIONS – 5 réservations pour Claire (USER)               //

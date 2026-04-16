@@ -1,4 +1,5 @@
 package com.eni.bookhub.BO;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -58,8 +59,9 @@ public class User {
     @JoinColumn(name="role_id")
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user")
-    private List<Loan> loans;
+    @OneToMany(mappedBy = "user",  fetch = FetchType.LAZY)
+    @JsonManagedReference("user-loan")
+    private List<Loan> loans = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Reservation> reservations;
