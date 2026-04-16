@@ -1,11 +1,18 @@
 package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.User;
+import com.eni.bookhub.dto.ChangePasswordDTO;
+import com.eni.bookhub.dto.UpdateRoleUserDTO;
+import com.eni.bookhub.dto.UserDTO;
+import com.eni.bookhub.BO.UserRole;
+import com.eni.bookhub.dto.UserRoleDTO;
 import com.eni.bookhub.dto.*;
 import com.eni.bookhub.mapper.UserMapper;
 import com.eni.bookhub.repository.UserRepository;
+import com.eni.bookhub.repository.UserRoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor; // Utilise RequiredArgsConstructor pour les champs final
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,6 +26,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final UserRoleRepository userRoleRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, UserRoleRepository userRoleRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+        this.userRoleRepository = userRoleRepository;
+    }
 
     @Override
     public UserDetailsDTO getUserDetails(String email) {
@@ -102,6 +118,26 @@ public class UserServiceImpl implements UserService {
 
         existingUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userRepository.save(existingUser);
+    }
+
+    @Transactional
+    @Override
+    public void updateRole(int userId, int roleId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+        UserRole role = userRoleRepository.findById(roleId)
+                .orElseThrow(() -> new RuntimeException("Rôle non trouvé"));
+        user.setUserRole(role);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<UserDTO> getUserByRoleName(String role) {
+        return userRepository.findByUserRole_RoleName(role)
+                .stream()
+                .map(userMapper::toDTO)
+                .toList();
     }
 
     @Override

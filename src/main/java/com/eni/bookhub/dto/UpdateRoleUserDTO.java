@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRoleDTO {
+public class UpdateRoleUserDTO {
+
     private Integer id;
-    private String roleName;
+    private UserRoleDTO userRole;
+
 }

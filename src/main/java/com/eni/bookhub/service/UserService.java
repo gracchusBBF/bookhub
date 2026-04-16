@@ -3,6 +3,9 @@ package com.eni.bookhub.service;
 import com.eni.bookhub.BO.User;
 import com.eni.bookhub.BO.UserRole;
 import com.eni.bookhub.dto.*;
+import com.eni.bookhub.dto.ChangePasswordDTO;
+import com.eni.bookhub.dto.UpdateRoleUserDTO;
+import com.eni.bookhub.dto.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,4 +22,6 @@ public interface UserService {
     void partialUpdate(String email, UserUpdateDTO dto);
     UserDetailsDTO getUserDetails(String email);
     void updateUserDetails(UserUpdateDTO dto);
+    void updateRole(int userId, int roleId);
+    List<UserDTO> getUserByRoleName(String roleName);
 }

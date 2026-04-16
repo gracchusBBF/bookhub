@@ -20,4 +20,6 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     void deleteUserById(int userId);
 
     Optional<User> findByEmail(String email);
+
+    List<User> findByUserRole_RoleName(String roleName);
 }
