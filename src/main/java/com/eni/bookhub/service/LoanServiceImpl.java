@@ -34,7 +34,7 @@ public class LoanServiceImpl implements LoanService {
         dto.setStartDate(loan.getStartDate());
         dto.setReturnDate(loan.getReturnDate());
         dto.setDeadline(loan.getDeadline());
-        if (loan.getUser() != null) dto.setUserId(loan.getUser().getId());
+        if (loan.getUser() != null) dto.setUserEmail(loan.getUser().getEmail());
         if (loan.getBook() != null) {
             dto.setBookId(loan.getBook().getId());
             dto.setBookTitle(loan.getBook().getTitle());
@@ -82,7 +82,7 @@ public class LoanServiceImpl implements LoanService {
             Book book = bookRepository.findById(loanDTO.getBookId())
                     .orElseThrow(() -> new RuntimeException("Livre introuvable."));
 
-            User user = userRepository.findById(loanDTO.getUserId())
+            User user = userRepository.findByEmail(loanDTO.getUserEmail())
                     .orElseThrow(() -> new RuntimeException("Utilisateur introuvable."));
 
             // 2. Créer l'entité à partir du DTO
@@ -99,12 +99,13 @@ public class LoanServiceImpl implements LoanService {
             if (isUserFull(user)) {
                 throw new RuntimeException("Limite de 3 emprunts atteinte.");
             }
-            if (book.getCopyNumber() < 1) {
+            if (book.getCopyNumber() < 1 || !book.getStatus().equals("AVAILABLE")) {
                 throw new RuntimeException("Le livre n'est pas disponible.");
             }
 
             // 4. Sauvegarde
             book.setCopyNumber(book.getCopyNumber() - 1);
+            book.setStatus("UNAVAILABLE");
             bookRepository.save(book);
             loanRepository.save(loan);
 

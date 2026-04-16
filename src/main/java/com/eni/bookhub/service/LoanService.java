@@ -20,8 +20,6 @@ public interface LoanService {
     Integer numberTotalLoans();
     Integer numberActiveLoans();
 
-    Boolean getLoanById(int id);
-
     Boolean createLoan(LoanDTO loan);
 
     Boolean returnLoan(int id);

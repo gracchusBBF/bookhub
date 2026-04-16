@@ -21,7 +21,7 @@ public class UserMapper {
                         loan.getStartDate(),
                         loan.getDeadline(),
                         loan.getReturnDate(),
-                        user.getId(),
+                        user.getEmail(),
                         loan.getBook() != null ? loan.getBook().getId() : null,
                         loan.getBook() != null ? loan.getBook().getTitle() : null
                 ))

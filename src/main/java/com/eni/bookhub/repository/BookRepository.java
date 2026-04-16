@@ -17,6 +17,15 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
 
     boolean existsBooksByIsbn(String isbn);
     Optional<Book> findBooksByTitle(String title);
+//
+//    @Query("SELECT b FROM Book b WHERE " +
+//            "LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//            "LOWER(b.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//            "LOWER(b.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//            "LOWER(CONCAT(b.firstName, ' ', b.lastName)) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//            "LOWER(CONCAT(b.lastName, ' ', b.firstName)) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+//            "LOWER(b.isbn) = LOWER(:query)")
+//    Page<Book> searchBooksByQuery(@Param("query") String query, @NonNull Pageable pageable);
 
     @Query("SELECT b FROM Book b WHERE " +
             "LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
@@ -25,12 +34,16 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
             "LOWER(CONCAT(b.firstName, ' ', b.lastName)) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(CONCAT(b.lastName, ' ', b.firstName)) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(b.isbn) = LOWER(:query)")
-    Page<Book> searchBooksByQuery(@Param("query") String query, @NonNull Pageable pageable);
+   List<Book> searchBooksByQuery(@Param("query") String query);
 
     @Query("SELECT b FROM Book b WHERE " +
-            "(:category IS NULL OR LOWER(b.category) LIKE LOWER(CONCAT('%', :category, '%'))) AND " +
+            "(:category IS NULL OR LOWER(b.category) LIKE LOWER(:category)) AND " +
             "(:status IS NULL OR LOWER(b.status) = LOWER(:status))")
     Page<Book> getBooksByFilters(@Param("category") String category, @Param("status") String status, @NonNull Pageable pageable);
 
-    
+    @Query("SELECT b.category FROM Book b GROUP BY b.category")
+    List<String> getCategories();
+
+    @Query("SELECT b.status FROM Book b GROUP BY b.status")
+    List<String> getStatus();
 }

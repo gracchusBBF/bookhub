@@ -2,10 +2,12 @@ package com.eni.bookhub.service;
 
 import com.eni.bookhub.BO.Book;
 import com.eni.bookhub.dto.BookDTO;
+import com.eni.bookhub.dto.PageResponseDTO;
 import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.mapper.BookMapper;
 import com.eni.bookhub.repository.BookRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,19 +23,40 @@ public class BookServiceImpl implements BookService {
     private BookMapper bookMapper;
 
     @Override
-    public List<BookDTO> getBooks(int pageNum) {
-        Pageable pageable = PageRequest.of(pageNum - 1, 20);
-        return bookRepository.findAll(pageable)
-                .getContent()
+    public PageResponseDTO<BookDTO> getBooks(int pageNum, String category, String status) {
+        Pageable pageable = PageRequest.of(pageNum, 20);
+
+        String categoryFilter = (category != null && !category.isEmpty()) ? "%" + category + "%" : null;
+
+        Page<Book> page = bookRepository.getBooksByFilters(categoryFilter, status, pageable);
+
+        List<BookDTO> content = page.getContent()
                 .stream()
                 .map(bookMapper::toDTO)
                 .toList();
+
+        return new PageResponseDTO<>(
+                content,
+                page.getTotalPages(),
+                page.getTotalElements(),
+                pageNum
+        );
     }
 
     @Override
     public Optional<BookDTO> getBookById(Integer bookId) {
         return bookRepository.findById(bookId)
                 .map(bookMapper::toDTO);
+    }
+
+    @Override
+    public List<String> getCategories() {
+        return bookRepository.getCategories();
+    }
+
+    @Override
+    public List<String> getStatus(){
+        return bookRepository.getStatus();
     }
 
     @Override
@@ -69,29 +92,23 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(bookId);
     }
 
-    @Override
-    public Optional<List<BookDTO>> searchBooks(int pageNum, String query) {
-        Pageable pageable = PageRequest.of(pageNum - 1, 20);
-        return Optional.of(
-                bookRepository.searchBooksByQuery(query, pageable)
-                        .getContent()
-                        .stream()
-                        .map(bookMapper::toDTO)
-                        .toList()
-        );
-    }
+//    @Override
+//    public Optional<List<BookDTO>> searchBooks(int pageNum, String query) {
+//        Pageable pageable = PageRequest.of(pageNum - 1, 20);
+//        return Optional.of(
+//                bookRepository.searchBooksByQuery(query, pageable)
+//                        .getContent()
+//                        .stream()
+//                        .map(bookMapper::toDTO)
+//                        .toList()
+//        );
+//    }
 
     @Override
-    public Optional<List<BookDTO>> filterBooks(int pageNum, String category, String status) {
-        Pageable pageable = PageRequest.of(pageNum - 1, 20);
-        String cat = (category != null && !category.isBlank()) ? category : null;
-        String sta = (status != null && !status.isBlank()) ? status : null;
-        return Optional.of(
-                bookRepository.getBooksByFilters(cat, sta, pageable)
-                        .getContent()
-                        .stream()
-                        .map(bookMapper::toDTO)
-                        .toList()
-        );
+    public List<BookDTO> searchBooks(String query) {
+        return bookRepository.searchBooksByQuery(query)
+                .stream()
+                .map(bookMapper::toDTO)
+                .toList();
     }
 }
