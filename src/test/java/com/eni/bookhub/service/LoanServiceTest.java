@@ -149,7 +149,7 @@ class LoanServiceTest {
         // L'update utilise toujours l'ID technique
         when(loanRepository.findById(10)).thenReturn(Optional.of(loan));
 
-        Boolean result = loanService.updateLoan(10);
+        Boolean result = loanService.returnLoan(10);
 
         assertTrue(result);
         assertNotNull(loan.getReturnDate());

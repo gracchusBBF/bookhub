@@ -1,73 +1,92 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.dto.LoanDTO;
-import com.eni.bookhub.dto.UserDTO;
-import com.eni.bookhub.service.LoanServiceImpl;
+import com.eni.bookhub.service.LoanService; // Utilisation de l'interface
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/loans") // On centralise le prefixe ici
 public class LoanController {
-    private final LoanServiceImpl loanServiceImpl;
 
-    public LoanController(LoanServiceImpl loanServiceImpl) {
-        this.loanServiceImpl = loanServiceImpl;
+    private final LoanService loanService;
+
+    public LoanController(LoanService loanService) {
+        this.loanService = loanService;
     }
 
-    @PostMapping("/api/loans")
+    @PostMapping
     public ResponseEntity<Void> save(@RequestBody LoanDTO loan) {
-        if (loanServiceImpl.createLoan(loan)) {
+        if (loanService.createLoan(loan)) {
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @PutMapping("/{id}/return")
+    public ResponseEntity<Void> returnBook(@PathVariable int id) {
+        if (loanService.returnLoan(id)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    @PutMapping("/api/loans/{id}/return")
-    public ResponseEntity<Void> returnBook(@PathVariable int id) {
-        if (loanServiceImpl.updateLoan(id)){
-            return ResponseEntity.ok().build();
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-    }
-
-    @GetMapping(value = "/api/loans")
+    @GetMapping
     public List<LoanDTO> listLoans() {
-        return loanServiceImpl.listLoans();
+        return loanService.listLoans();
     }
 
-    @GetMapping("/api/loans/active")
+    // Changement du path pour éviter les conflits avec /active ou /overdue
+    @GetMapping("/user/{userEmail}")
+    public List<LoanDTO> listLoansByUser(@PathVariable String userEmail) {
+        return loanService.listLoanByUserEmail(userEmail);
+    }
+
+    @GetMapping("/active")
     public ResponseEntity<?> listActiveLoans() {
         try {
-            List<LoanDTO> activeLoansList = loanServiceImpl.listActiveLoans();
-            if (activeLoansList.isEmpty() || activeLoansList == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            List<LoanDTO> activeLoansList = loanService.listActiveLoans();
+            if (activeLoansList == null || activeLoansList.isEmpty()) {
+                return ResponseEntity.noContent().build();
             }
-            return ResponseEntity.status(HttpStatus.OK).body(activeLoansList);
+            return ResponseEntity.ok(activeLoansList);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/api/loans/overdue")
+    @GetMapping("/overdue")
     public ResponseEntity<?> listOverdueLoans() {
         try {
-            List<LoanDTO> overdueLoansList = loanServiceImpl.listOverdueLoans();
+            List<LoanDTO> overdueLoansList = loanService.listOverdueLoans();
             if (overdueLoansList == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return ResponseEntity.notFound().build();
             }
-            return ResponseEntity.status(HttpStatus.OK).body(overdueLoansList);
+            return ResponseEntity.ok(overdueLoansList);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping(value = "/api/loans/{userEmail}")
-    public List<LoanDTO> listLoans(@PathVariable String userEmail) {
-        return loanServiceImpl.listLoanByUserEmail(userEmail);
+    @GetMapping("/stats/totalLoans")
+    public ResponseEntity<String> totalLoans() {
+        try {
+            return ResponseEntity.ok(loanService.numberTotalLoans().toString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/stats/activeLoans")
+    public ResponseEntity<String> activeLoans() {
+        try {
+            return ResponseEntity.ok(loanService.numberActiveLoans().toString());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

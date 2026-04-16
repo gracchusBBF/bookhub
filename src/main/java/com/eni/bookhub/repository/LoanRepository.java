@@ -4,8 +4,6 @@ import com.eni.bookhub.BO.Loan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 
 @Repository
@@ -14,10 +12,17 @@ public interface LoanRepository extends JpaRepository<Loan, Integer> {
     List<Loan> findByUserId(int userId);
 
     // Active loans
-    @Query("SELECT l FROM Loan l WHERE l.returnDate IS NULL")
+    @Query("SELECT l FROM Loan l WHERE l.returnDate IS NULL ORDER BY l.deadline ASC")
     List<Loan> findActiveLoans();
 
     // Overdue
-    @Query("SELECT l FROM Loan l WHERE l.returnDate IS NULL AND l.deadline < CURRENT DATE ")
+    @Query("SELECT l FROM Loan l WHERE l.returnDate IS NULL AND l.deadline < CURRENT DATE ORDER BY l.deadline ASC")
     List<Loan> findOverdueLoans();
+
+    @Query("SELECT COUNT(l) FROM Loan l")
+    Integer totalLoans();
+
+    @Query("SELECT COUNT(l) FROM Loan l WHERE l.returnDate IS NULL")
+    Integer activeLoans();
+
 }
