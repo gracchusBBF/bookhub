@@ -44,7 +44,7 @@ public class BookController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status) {
 
-        PageResponseDTO<BookDTO> result = bookService.getBooks(page);
+        PageResponseDTO<BookDTO> result = bookService.getBooks(page, category, status);
 
         if (result.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -54,12 +54,13 @@ public class BookController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchBooksByQuery(@RequestParam Map<String, String> requestParams) {
-        String page = requestParams.get("page");
+//        String page = requestParams.get("page");
         String query = requestParams.get("query");
 
-        int pageNum = (page != null) ? Integer.parseInt(page) : 1;
+//        int pageNum = (page != null) ? Integer.parseInt(page) : 1;
 
-        Optional<List<BookDTO>> books =  bookService.searchBooks(pageNum, query);
+//        Optional<List<BookDTO>> books =  bookService.searchBooks(pageNum, query);
+        List<BookDTO> books =  bookService.searchBooks(query);
         return ResponseEntity.ok(books);
     }
 
@@ -67,6 +68,17 @@ public class BookController {
     public ResponseEntity<?> getBookById(@PathVariable String id) {
         BookDTO book = getValidateBookDTO(id);
         return ResponseEntity.ok(book);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<String>> getAllCategories() {
+        return ResponseEntity.ok(bookService.getCategories());
+    }
+
+
+    @GetMapping("/status")
+    public ResponseEntity<List<String>> getAllStatus() {
+        return ResponseEntity.ok(bookService.getStatus());
     }
 
     @PostMapping
