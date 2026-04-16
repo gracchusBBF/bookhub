@@ -17,11 +17,10 @@ public interface LoanService {
 
     List<LoanDTO> listOverdueLoans();
 
-    Boolean getLoanById(int id);
+    Integer numberTotalLoans();
+    Integer numberActiveLoans();
 
     Boolean createLoan(LoanDTO loan);
 
-    Boolean updateLoan(int id);
-
-
+    Boolean returnLoan(int id);
 }
