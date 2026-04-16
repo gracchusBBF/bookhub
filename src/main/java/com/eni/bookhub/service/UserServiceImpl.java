@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
     public void deleteAccount(DeleteAccountDTO userDto) {
         // 1. On cherche l'utilisateur
         userRepository.getUserByEmail(userDto.getEmail()).ifPresent(userEntity -> {
-
+            
             // 2. Vérification du mot de passe
             // On compare le mot de passe clair du DTO avec le mot de passe encodé en base
             if (!passwordEncoder.matches(userDto.getPassword(), userEntity.getPassword())) {
