@@ -40,8 +40,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/roles/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/loans/{id}/return").hasAuthority("ROLE_LIBRARIAN")
+                        .requestMatchers("/api/loans/user/{email}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasAuthority("ROLE_LIBRARIAN")
                         .requestMatchers("/api/loans/active").hasAuthority("ROLE_LIBRARIAN")
                         .requestMatchers("/api/loans/overdue").hasAuthority("ROLE_LIBRARIAN")
