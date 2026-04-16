@@ -1,6 +1,7 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.dto.BookDTO;
+import com.eni.bookhub.dto.PageResponseDTO;
 import com.eni.bookhub.exception.BookNotFoundException;
 import com.eni.bookhub.exception.DuplicateIsbnException;
 import com.eni.bookhub.exception.InvalidBookIdException;
@@ -38,33 +39,28 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<Optional<List<BookDTO>>> getAllBooks(
+    public ResponseEntity<PageResponseDTO<BookDTO>> getAllBooks(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String status) {
 
-        Optional<List<BookDTO>> books;
+        PageResponseDTO<BookDTO> result = bookService.getBooks(page, category, status);
 
-        if ((category != null && !category.isBlank()) || (status != null && !status.isBlank())) {
-            books = bookService.filterBooks(page, category, status);
-        } else {
-            books = Optional.ofNullable(bookService.getBooks(page));
-        }
-
-        if (books.isEmpty()) {
+        if (result.getContent().isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(books);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchBooksByQuery(@RequestParam Map<String, String> requestParams) {
-        String page = requestParams.get("page");
+//        String page = requestParams.get("page");
         String query = requestParams.get("query");
 
-        int pageNum = (page != null) ? Integer.parseInt(page) : 1;
+//        int pageNum = (page != null) ? Integer.parseInt(page) : 1;
 
-        Optional<List<BookDTO>> books =  bookService.searchBooks(pageNum, query);
+//        Optional<List<BookDTO>> books =  bookService.searchBooks(pageNum, query);
+        List<BookDTO> books =  bookService.searchBooks(query);
         return ResponseEntity.ok(books);
     }
 
@@ -72,6 +68,17 @@ public class BookController {
     public ResponseEntity<?> getBookById(@PathVariable String id) {
         BookDTO book = getValidateBookDTO(id);
         return ResponseEntity.ok(book);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<String>> getAllCategories() {
+        return ResponseEntity.ok(bookService.getCategories());
+    }
+
+
+    @GetMapping("/status")
+    public ResponseEntity<List<String>> getAllStatus() {
+        return ResponseEntity.ok(bookService.getStatus());
     }
 
     @PostMapping

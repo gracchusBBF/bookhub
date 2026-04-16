@@ -6,11 +6,12 @@ import com.eni.bookhub.dto.UpdateRoleUserDTO;
 import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.BO.UserRole;
 import com.eni.bookhub.dto.UserRoleDTO;
+import com.eni.bookhub.dto.*;
 import com.eni.bookhub.mapper.UserMapper;
 import com.eni.bookhub.repository.UserRepository;
 import com.eni.bookhub.repository.UserRoleRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor; // Utilise RequiredArgsConstructor pour les champs final
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,9 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -34,40 +36,56 @@ public class UserServiceImpl implements UserService {
         this.userRoleRepository = userRoleRepository;
     }
 
+    @Override
+    public UserDetailsDTO getUserDetails(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        UserDetailsDTO dto = new UserDetailsDTO();
+        dto.setEmail(user.getEmail());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+
+        return dto;
+    }
+
+    @Override
+    @Transactional
+    public void partialUpdate(String email, UserUpdateDTO dto) {
+        User existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        if (dto.getEmail() != null) existingUser.setEmail(dto.getEmail());
+        if (dto.getPhoneNumber() != null) existingUser.setPhoneNumber(dto.getPhoneNumber());
+        if (dto.getFirstName() != null) existingUser.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null) existingUser.setLastName(dto.getLastName());
+
+        userRepository.save(existingUser);
+    }
 
     @Override
     public Optional<UserDTO> getUserById(Integer userId) {
-
-        return userRepository
-                .findById(userId)
-                .map(userMapper::toDTO);
+        return userRepository.findById(userId).map(userMapper::toDTO);
     }
 
     @Override
     public Optional<UserDTO> getUserByEmail(String email) {
-
-        return userRepository
-                .getUserByEmail(email)
-                .map(userMapper::toDTO);
+        return userRepository.getUserByEmail(email).map(userMapper::toDTO);
     }
 
     @Override
     public List<UserDTO> getAll() {
-
-        return userRepository
-                .findAll()
-                .stream()
+        return userRepository.findAll().stream()
                 .map(userMapper::toDTO)
                 .toList();
     }
 
-//    @Override
-//    public Optional<List<UserDTO>> getByRole(String role) {
-//        return userRepository.findByUserRole(role)
-//                .map(list -> list.stream()
-//                        .map(userMapper::toDTO)
-//                        .toList());
-//    }
+    @Override
+    public Optional<List<UserDTO>> getByRole(String role) {
+        return userRepository.findByUserRole(role)
+                .map(list -> list.stream().map(userMapper::toDTO).toList());
+    }
 
     @Override
     public UserDTO saveUser(UserDTO userDTO) {
@@ -75,11 +93,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Informations de l'utilisateur incomplètes");
         }
         User user = userMapper.toEntity(userDTO);
-        try {
-            return userMapper.toDTO(userRepository.save(user));
-        } catch (Exception e) {
-            throw new RuntimeException("Impossible de sauvegarder cet utilisateur " + e.getMessage());
+        // On encode le mot de passe avant de sauvegarder si c'est une création
+        if (user.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
+        return userMapper.toDTO(userRepository.save(user));
     }
 
     @Override
@@ -87,21 +105,18 @@ public class UserServiceImpl implements UserService {
     public void delete(int userId) {
         userRepository.deleteUserById(userId);
     }
+
     @Override
+    @Transactional
     public void updatePassword(ChangePasswordDTO dto) {
-        // 1. Récupérer l'utilisateur complet en base
         User existingUser = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-        // 2. Optionnel : Vérifier l'ancien mot de passe
         if (!passwordEncoder.matches(dto.getOldPassword(), existingUser.getPassword())) {
             throw new RuntimeException("L'ancien mot de passe est incorrect");
         }
 
-        // 3. Mettre à jour le mot de passe (avec encodage !)
         existingUser.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-
-        // 4. Sauvegarder l'entité complète (l'ID est déjà dedans, donc c'est un UPDATE)
         userRepository.save(existingUser);
     }
 
@@ -125,4 +140,42 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public void deleteAccount(DeleteAccountDTO userDto) {
+        // 1. On cherche l'utilisateur
+        User userEntity = userRepository.findByEmail(userDto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
+
+        // 2. Vérification du mot de passe
+        if (!passwordEncoder.matches(userDto.getPassword(), userEntity.getPassword())) {
+            throw new RuntimeException("Mot de passe incorrect : suppression impossible.");
+        }
+
+        // 3. NOUVEAU : Vérifier si des emprunts sont encore en cours
+        // On parcourt la liste des loans et on cherche s'il y en a un sans date de retour
+        boolean hasActiveLoans = userEntity.getLoans().stream()
+                .anyMatch(loan -> loan.getReturnDate() == null);
+
+        if (hasActiveLoans) {
+            throw new RuntimeException("Impossible d'anonymiser le compte : des livres n'ont pas encore été rendus.");
+        }
+
+        // 4. Si c'est bon, on anonymise
+        userEntity.setEmail("deleted_" + userEntity.getId() + "@deleted.local");
+        userEntity.setPhoneNumber("0000000000"); // respecter la contrainte de longueur 10
+        userEntity.setPassword(passwordEncoder.encode("DELETED_USER_PWD")); // Sécurité : mot de passe bidon encodé
+        userEntity.setLastName("Deleted");
+        userEntity.setFirstName("User");
+
+        // 5. On sauvegarde
+        userRepository.save(userEntity);
+    }
+    // J'ai fusionné updateUserDetails avec la logique de retour DTO si nécessaire
+    @Override
+    @Transactional
+    public void updateUserDetails(UserUpdateDTO dto) {
+        // Appelle simplement la logique existante pour éviter la duplication
+        this.partialUpdate(dto.getEmail(), dto);
+    }
 }

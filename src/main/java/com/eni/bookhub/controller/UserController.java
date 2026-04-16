@@ -1,16 +1,19 @@
 package com.eni.bookhub.controller;
 
 import com.eni.bookhub.BO.User;
+import com.eni.bookhub.dto.*;
 import com.eni.bookhub.dto.ChangePasswordDTO;
 import com.eni.bookhub.dto.UpdateRoleUserDTO;
 import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.dto.UserRoleDTO;
+import com.eni.bookhub.dto.UserUpdateDTO;
 import com.eni.bookhub.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +22,8 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -37,6 +42,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
+        log.info("list user atteint");
         try {
             List<UserDTO> usersList = userService.getAll();
             if (usersList.isEmpty() || usersList == null) {
@@ -44,7 +50,8 @@ public class UserController {
             }
             return ResponseEntity.status(HttpStatus.OK).body(usersList);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            e.printStackTrace(); // CELA VA ENFIN AFFICHER L'ERREUR DANS VOTRE CONSOLE
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur : " + e.getMessage());
         }
     }
 
@@ -57,6 +64,10 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+    @GetMapping("/details/{email}")
+    public UserDetailsDTO getUserDetails(@PathVariable("email") String email){
+        return userService.getUserDetails(email);
     }
 
     @GetMapping("/email/{email}")
@@ -72,7 +83,7 @@ public class UserController {
     @GetMapping("/role/{role}")
     public ResponseEntity<?> getUsersByRole(@PathVariable("role") String role) {
         try{
-            final List<UserDTO> usersByRole = userService.getUserByRoleName(role);
+            final Optional<List<UserDTO>> usersByRole = userService.getByRole(role);
             return ResponseEntity.status(HttpStatus.OK).body(usersByRole);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -93,13 +104,10 @@ public class UserController {
         }
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateUser(@Valid @RequestBody UserDTO user) {
+    @PutMapping("/update-details")
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserUpdateDTO user) {
         try{
-            if(user == null || user.id() == null || user.id() <= 0) {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("User et l'id sont obligatoires.");
-            }
-            userService.saveUser(user);
+            userService.updateUserDetails(user);
             return ResponseEntity.status(HttpStatus.OK).body(user);
         } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -118,6 +126,28 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
+
+    @PutMapping("/delete-account")
+    public ResponseEntity<?> updateAccount(@Valid @RequestBody DeleteAccountDTO user){
+        try {
+            userService.deleteAccount(user);
+            return ResponseEntity.status(HttpStatus.OK).body("Le compte a bien été supprimé.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+    @PutMapping("/{email}")
+    public ResponseEntity<?> updateUser(@PathVariable String email, @RequestBody UserUpdateDTO dto) {
+        try {
+            userService.partialUpdate(email, dto);
+            return ResponseEntity.status(HttpStatus.OK).body("informations mise à jour");
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
 
     @PatchMapping("/{id}/role")
     public ResponseEntity<?> updateRole(@PathVariable int id, @RequestBody UserRoleDTO roleDTO) {
