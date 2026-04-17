@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/api/roles/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("api/permissions/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/permissions/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_ADMIN")
                         .requestMatchers("/api/loans/user/*").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/loans/*/return").hasAnyAuthority("ROLE_LIBRARIAN", "ROLE_ADMIN")
