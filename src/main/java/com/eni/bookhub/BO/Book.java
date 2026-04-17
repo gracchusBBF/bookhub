@@ -59,7 +59,6 @@ public class Book {
     @NotNull
     @Size(max = 120)
     @Builder.Default
-//    @Enumerated(EnumType.STRING)
     private String status = "AVAILABLE";
 
     @NotBlank
@@ -78,7 +77,6 @@ public class Book {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-//    @JoinColumn(name = "loan_id", nullable = false)
     @JsonManagedReference("book-loan")
     private List<Loan> loans = new ArrayList<>();
 
