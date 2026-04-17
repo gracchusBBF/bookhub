@@ -5,6 +5,7 @@ import com.eni.bookhub.dto.PermissionDTO;
 import com.eni.bookhub.exception.InvalidBookIdException;
 import com.eni.bookhub.exception.PermissionNotFoundException;
 import com.eni.bookhub.service.PermissionService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/permissions")
+@Tag(name = "Permissions", description = "Permet l'attribution de permissions à des rôles")
 public class PermissionController {
     private PermissionService permissionService;
 

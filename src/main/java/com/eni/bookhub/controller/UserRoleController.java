@@ -2,6 +2,7 @@ package com.eni.bookhub.controller;
 
 import com.eni.bookhub.dto.UserRoleDTO;
 import com.eni.bookhub.service.UserRoleService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/roles")
+@Tag(name = "Roles", description = "Gestion des rôles (admin, user, librarian) et de leur attribution aux utilisateurs")
 public class UserRoleController {
     private UserRoleService userRoleService;
 
