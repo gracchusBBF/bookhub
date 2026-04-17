@@ -5,6 +5,7 @@ import com.eni.bookhub.dto.LoanDTO;
 import com.eni.bookhub.dto.ReservationDTO;
 import com.eni.bookhub.service.LoanServiceImpl;
 import com.eni.bookhub.service.ReservationServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
+@Tag(name = "Reservation", description = "Gestions des réservations de livres par les utilisateurs")
 public class ReservationController {
 
     private final ReservationServiceImpl reservationServiceImpl;

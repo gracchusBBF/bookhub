@@ -8,6 +8,7 @@ import com.eni.bookhub.dto.UserDTO;
 import com.eni.bookhub.dto.UserRoleDTO;
 import com.eni.bookhub.dto.UserUpdateDTO;
 import com.eni.bookhub.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/users")
+@Tag(name = "Users", description = "Gestion des utilisateurs") // permet d'afficher d'afficher la description du controller dans l'ui de swagger
 public class UserController {
 
     private final UserService userService;
