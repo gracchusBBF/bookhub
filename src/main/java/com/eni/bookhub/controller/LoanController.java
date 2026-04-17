@@ -2,6 +2,7 @@ package com.eni.bookhub.controller;
 
 import com.eni.bookhub.dto.LoanDTO;
 import com.eni.bookhub.service.LoanService; // Utilisation de l'interface
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/loans") // On centralise le prefixe ici
+@Tag(name = "Loans", description = "Gestion des emprunts par les utilisateurs")
 public class LoanController {
 
     private final LoanService loanService;

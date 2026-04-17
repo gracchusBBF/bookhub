@@ -4,6 +4,7 @@ import com.eni.bookhub.BO.Comment;
 import com.eni.bookhub.dto.CommentCreateDTO;
 import com.eni.bookhub.dto.CommentDTO;
 import com.eni.bookhub.service.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/comments")
 @RequiredArgsConstructor
+@Tag(name = "Comments", description = "Gestion des commentaires et leur relations (user, book)")
 public class CommentController {
 
     private final CommentService commentService;
